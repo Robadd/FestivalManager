@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="de">
+
+<head>
+<title></title>
+    <style>
+        @media print {
+            .container {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                font-family: Calibri;
+            }
+            .container>img {
+                position: absolute;
+                z-index: -100;
+                opacity: 10%;
+                border: 2px black solid;
+            }
+            .header {
+                margin: auto auto auto auto;
+                width: fit-content;
+                font-size: 91px;
+                font-family: Marcelle Script;
+            }
+            .image {
+                top: 4.5cm;
+                right: 1.5cm;
+                position: absolute;
+            }
+            .url {
+                position: absolute;
+                top: 10cm;
+                right: 2.5cm;
+            }
+            .info {
+                position: absolute;
+            }
+            .type {
+                position: absolute;
+                left: 2cm;
+                top: 5cm;
+                font-size: 40px;
+                font-family: 'Times New Roman';
+            }
+            .infos {
+                position: absolute;
+                left: 2cm;
+                top: 8.5cm;
+            }
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <div class="container">
+        <img src="logo-big.jpg" alt="logo" />
+        <div class="header">RDH-Festival</div>
+        <div class="image">
+            <img th:src="@{${qr}}" alt="qrCode"/>
+        </div>
+        <div class="url">www.rdh-festival.de</div>
+        <div class="type" th:text="${type}"></div>
+        <div class="infos">Stehplatz<br />inkl. Camping &amp; Parken<br /><span th:text="${price}" />�</div>
+
+    </div>
+
+</body>
+
+</html>
