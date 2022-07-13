@@ -14,6 +14,7 @@ import javax.swing.AbstractAction;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -29,6 +30,7 @@ import de.robadd.festivalmanager.Ticket;
 public class Entry extends JPanel
 {
 	private static final long serialVersionUID = -6083595259931310400L;
+	private Integer position = 0;
 	private JTextField personNameTextField;
 	private JRadioButton type1Day;
 	private JRadioButton type3Day;
@@ -36,8 +38,9 @@ public class Entry extends JPanel
 	private JCheckBox paidCheckbox;
 	private JButton printPdfButton;
 	private JCheckBox sentCheckbox;
+	private JLabel pos;
 
-	public Entry(final Ticket ticket)
+	public Entry(final Ticket ticket, final int pos)
 	{
 		this();
 		personNameTextField.setText(ticket.getName());
@@ -53,6 +56,9 @@ public class Entry extends JPanel
 		paidCheckbox.setSelected(ticket.isPaid());
 		printPdfButton.setEnabled(ticket.isPaid());
 		sentCheckbox.setSelected(ticket.isSent());
+
+		position = pos;
+		this.pos.setText(position.toString());
 	}
 
 	public Entry()
@@ -63,7 +69,7 @@ public class Entry extends JPanel
 		ButtonGroup type = new ButtonGroup();
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]
-		{ 131, 131, 131, 131, 131, 131, 0 };
+		{ 20, 131, 131, 131, 131, 131, 131 };
 		gridBagLayout.rowHeights = new int[]
 		{ 20, 0 };
 		gridBagLayout.columnWeights = new double[]
@@ -72,6 +78,7 @@ public class Entry extends JPanel
 		{ 0.0, Double.MIN_VALUE };
 		setLayout(gridBagLayout);
 
+		pos = new JLabel(position.toString());
 		personNameTextField = new JTextField(10);
 		personNameTextField.setPreferredSize(new Dimension(100, 20));
 		personNameTextField.setMaximumSize(new Dimension(100, 20));
@@ -79,7 +86,7 @@ public class Entry extends JPanel
 
 		GridBagConstraints personNameTextFieldLayout = new GridBagConstraints();
 		personNameTextFieldLayout.fill = GridBagConstraints.BOTH;
-		personNameTextFieldLayout.gridx = 0;
+		personNameTextFieldLayout.gridx = 1;
 		personNameTextFieldLayout.gridy = 0;
 
 		type1Day = new JRadioButton("1 Tag");
@@ -114,15 +121,22 @@ public class Entry extends JPanel
 		typePanel.add(type3Day);
 
 		add(personNameTextField, personNameTextFieldLayout);
-		add(typePanel, layout(1));
-		add(tShirtCheckbox, layout(2));
-		add(paidCheckbox, layout(3));
-		add(printPdfButton, layout(4));
-		add(sentCheckbox, layout(5));
+		final GridBagConstraints layout1 = layout(2);
+		final GridBagConstraints layout2 = layout(3);
+		final GridBagConstraints layout3 = layout(4);
+		final GridBagConstraints layout4 = layout(5);
+		final GridBagConstraints layout5 = layout(6);
+		add(pos, layout(0));
+		add(typePanel, layout1);
+		add(tShirtCheckbox, layout2);
+		add(paidCheckbox, layout3);
+		add(printPdfButton, layout4);
+		add(sentCheckbox, layout5);
 	}
 
 	private JButton printPdfButton()
 	{
+		Entry self = this;
 		return new JButton(new AbstractAction("PDF generieren")
 		{
 			private static final long serialVersionUID = 1L;
@@ -130,28 +144,31 @@ public class Entry extends JPanel
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				EventQueue.invokeLater(() ->
-				{
-					try
-					{
-						String savePath = Config.getInstance().getSavePath();
-						final File backgroundImage = new File(savePath + "logo-big.jpg");
-						FileUtils.copyURLToFile(Main.class.getResource("/logo-big.jpg"), backgroundImage);
-
-						Ticket ticket = new Ticket(getPersonName(), getType(), getTShirt());
-						PDFWriter.writePdf(savePath, ticket);
-						Files.delete(backgroundImage.toPath());
-					}
-					catch (IOException e1)
-					{
-						e1.printStackTrace();
-					}
-				});
+				EventQueue.invokeLater(self::print);
 			}
+
 		});
 	}
 
-	private GridBagConstraints layout(final int a)
+	void print()
+	{
+		try
+		{
+			String savePath = Config.getInstance().getSavePath();
+			final File backgroundImage = new File(savePath + "logo-big.jpg");
+			FileUtils.copyURLToFile(Main.class.getResource("/logo-big.jpg"), backgroundImage);
+
+			Ticket ticket = new Ticket(getPersonName(), getType(), getTShirt());
+			PDFWriter.writePdf(savePath, ticket);
+			Files.delete(backgroundImage.toPath());
+		}
+		catch (IOException e1)
+		{
+			e1.printStackTrace();
+		}
+	}
+
+	private static GridBagConstraints layout(final int a)
 	{
 		GridBagConstraints typePanelLayout = new GridBagConstraints();
 		typePanelLayout.anchor = GridBagConstraints.WEST;

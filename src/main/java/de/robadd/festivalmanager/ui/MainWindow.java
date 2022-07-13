@@ -143,6 +143,18 @@ public class MainWindow
 		frame.getContentPane().add(bottom, bottomLayout);
 		bottom.add(addTicketButton(entryList));
 
+		JButton btnNewButton = new JButton(new AbstractAction("Alle drucken")
+		{
+
+			@Override
+			public void actionPerformed(final ActionEvent arg0)
+			{
+				entries.stream().filter(Entry::isPaid).forEach(Entry::print);
+			}
+
+		});
+		bottom.add(btnNewButton);
+
 		loadEntriesFromCsv(entryList);
 
 		JTabbedPane tabbedPane = new JTabbedPane(TOP);
@@ -254,17 +266,14 @@ public class MainWindow
 				}
 			}
 			List<Ticket> tickets = CSVUtils.readCsvToTickets(csvFile);
-			tickets.stream().map(a ->
+			for (Ticket ticket : tickets)
 			{
-				Entry entry1 = new Entry(a);
+				Entry entry1 = new Entry(ticket, entries.size() + 1);
 				entry1.setAlignmentY(Component.TOP_ALIGNMENT);
 				entry1.setAlignmentX(Component.LEFT_ALIGNMENT);
-				return entry1;
-			}).forEach(a ->
-			{
-				entryList.add(a);
-				entries.add(a);
-			});
+				entryList.add(entry1);
+				entries.add(entry1);
+			}
 
 			entryList.revalidate();
 			entryList.repaint();

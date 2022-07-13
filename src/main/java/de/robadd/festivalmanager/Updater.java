@@ -1,8 +1,16 @@
 package de.robadd.festivalmanager;
 
-import java.util.Arrays;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Updater
 {
@@ -15,22 +23,54 @@ public class Updater
 		//
 	}
 
-	public static boolean newerUpdate(final String oldVersion, final String newVersion)
+	public static String newerUpdate(final String oldVersion)
 	{
 		Version oldV = new Version(oldVersion);
-		Version newV = new Version(newVersion);
-		return oldV.compareTo(newV) < 0;
+		Version newV = listVersions().get(0);
+		if (oldV.compareTo(newV) < 0)
+		{
+			return newV.toString();
+		}
+		return null;
 	}
 
-	private static class Version implements Comparable<Version>
+	public static List<Version> listVersions()
+	{
+		List<Version> retVal = new ArrayList<>();
+		try
+		{
+			URL url = new URL("https://reiserdorfer-haisl.de/festivalmanager.php");
+			InputStream inputStream = url.openConnection().getInputStream();
+			InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+			BufferedReader reader = new BufferedReader(streamReader);
+			for (String line; (line = reader.readLine()) != null;)
+			{
+				String val = line.replace("FestivalManager-", "").replace(".jar", "");
+				retVal.add(new Version(val));
+			}
+			retVal.sort((a, b) -> b.compareTo(a));
+		}
+		catch (IOException e)
+		{
+			//
+		}
+		return retVal;
+	}
+
+	static class Version implements Comparable<Version>
 	{
 		int major;
 		int minor;
 		int dev;
+		boolean snapshot;
 
 		@Override
 		public int compareTo(final Version o)
 		{
+			if (snapshot || o.snapshot)
+			{
+				return 1;
+			}
 			if (this.equals(o))
 			{
 				return 0;
@@ -65,11 +105,17 @@ public class Updater
 		}
 
 		@Override
+		public String toString()
+		{
+			return major + "." + minor + "." + dev + (snapshot ? "-SNAPSHOT" : "");
+		}
+
+		@Override
 		public int hashCode()
 		{
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + Objects.hash(dev, major, minor);
+			result = prime * result + Objects.hash(dev, major, minor, snapshot);
 			return result;
 		}
 
@@ -89,23 +135,35 @@ public class Updater
 				return false;
 			}
 			Version other = (Version) obj;
-			return dev == other.dev && major == other.major && minor == other.minor;
+			return dev == other.dev && major == other.major && minor == other.minor && snapshot == other.snapshot;
 		}
 
-		Version(final String version)
+		Version(final String argVersion)
 		{
 			super();
-			List<String> list = Arrays.asList(version.split("\\."));
-			try
+
+			Matcher matcher = Pattern.compile(
+				"(?<major>\\d+)(?:\\.?(?<minor>\\d+))?(?:\\.?(?<dev>\\d+))?(?<snapshot>-SNAPSHOT)?").matcher(argVersion);
+			if (matcher.matches())
 			{
-				this.major = Integer.parseInt(list.get(0));
-				this.minor = Integer.parseInt(list.get(1));
-				this.dev = Integer.parseInt(list.get(2));
+				if (matcher.group("major") != null)
+				{
+					this.major = Integer.parseInt(matcher.group("major"));
+				}
+				if (matcher.group("minor") != null)
+				{
+					this.minor = Integer.parseInt(matcher.group("minor"));
+				}
+				if (matcher.group("dev") != null)
+				{
+					this.dev = Integer.parseInt(matcher.group("dev"));
+				}
+				if (matcher.group("snapshot") != null)
+				{
+					this.snapshot = true;
+				}
 			}
-			catch (IndexOutOfBoundsException | NumberFormatException e)
-			{
-				// Workflow
-			}
+
 		}
 	}
 

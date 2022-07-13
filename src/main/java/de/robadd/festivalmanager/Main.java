@@ -1,29 +1,38 @@
 package de.robadd.festivalmanager;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.apache.commons.io.FileUtils;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 import de.robadd.festivalmanager.ui.MainWindow;
+import de.robadd.festivalmanager.ui.UpdaterWindow;
 
 public class Main
 {
 	public static void main(final String[] args) throws Exception
 	{
 		MainWindow.main();
-	}
-
-	private static void execute(final String[] split) throws IOException
-	{
-		final File backgroundImage = new File(Config.getInstance().getSavePath() + "logo-big.jpg");
-		FileUtils.copyURLToFile(Main.class.getResource("/logo-big.jpg"), backgroundImage);
-
-		for (final String string : split)
+		InputStream inputStream = Main.class.getResourceAsStream("/version.properties");
+		if (inputStream != null)
 		{
-			PDFWriter.writePdf(Config.getInstance().getSavePath(), string);
+			System.out.println("inputStream found");
+			InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+			BufferedReader reader = new BufferedReader(streamReader);
+			for (String line; (line = reader.readLine()) != null;)
+			{
+				String[] split = line.split("=");
+				System.out.println("readLine: '" + split[0] + "'");
+				if ("version".equals(split[0]))
+				{
+					String version = Updater.newerUpdate(split[1]);
+					if (version != null)
+					{
+						System.out.println("version found");
+						UpdaterWindow.main(version);
+					}
+				}
+			}
 		}
-		backgroundImage.deleteOnExit();
 	}
-
 }
