@@ -30,14 +30,14 @@ public class UpdaterWindow
 {
 
 	private JFrame frame;
-	private List<Entry> entries = new ArrayList<>();
+	private List<AttendeeEntry> attendeeEntries = new ArrayList<>();
 
 	/**
 	 * @return the entries
 	 */
-	public List<Entry> getEntries()
+	public List<AttendeeEntry> getEntries()
 	{
-		return entries;
+		return attendeeEntries;
 	}
 
 	/**

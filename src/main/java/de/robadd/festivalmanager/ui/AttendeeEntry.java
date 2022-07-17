@@ -27,7 +27,7 @@ import de.robadd.festivalmanager.Main;
 import de.robadd.festivalmanager.PDFWriter;
 import de.robadd.festivalmanager.Ticket;
 
-public class Entry extends JPanel
+public class AttendeeEntry extends JPanel
 {
 	private static final long serialVersionUID = -6083595259931310400L;
 	private Integer position = 0;
@@ -40,7 +40,7 @@ public class Entry extends JPanel
 	private JCheckBox sentCheckbox;
 	private JLabel pos;
 
-	public Entry(final Ticket ticket, final int pos)
+	public AttendeeEntry(final Ticket ticket, final int pos)
 	{
 		this();
 		personNameTextField.setText(ticket.getName());
@@ -61,7 +61,7 @@ public class Entry extends JPanel
 		this.pos.setText(position.toString());
 	}
 
-	public Entry()
+	public AttendeeEntry()
 	{
 		setPreferredSize(new Dimension(900, 20));
 		setMaximumSize(new Dimension(900, 20));
@@ -136,7 +136,7 @@ public class Entry extends JPanel
 
 	private JButton printPdfButton()
 	{
-		Entry self = this;
+		AttendeeEntry self = this;
 		return new JButton(new AbstractAction("PDF generieren")
 		{
 			private static final long serialVersionUID = 1L;

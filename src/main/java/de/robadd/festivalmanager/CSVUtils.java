@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import de.robadd.festivalmanager.ui.Entry;
+import de.robadd.festivalmanager.ui.AttendeeEntry;
 
 public class CSVUtils
 {
@@ -44,11 +44,11 @@ public class CSVUtils
 		}
 	}
 
-	public static void writeTicketEntriesToCsv(final List<Entry> tickets, final File file)
+	public static void writeTicketEntriesToCsv(final List<AttendeeEntry> tickets, final File file)
 	{
 		try
 		{
-			Files.write(file.toPath(), tickets.stream().map(Entry::toCsvLine).collect(Collectors.toList()));
+			Files.write(file.toPath(), tickets.stream().map(AttendeeEntry::toCsvLine).collect(Collectors.toList()));
 		}
 		catch (IOException e)
 		{

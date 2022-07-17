@@ -36,14 +36,14 @@ public class MainWindow
 {
 
 	private JFrame frame;
-	private List<Entry> entries = new ArrayList<>();
+	private List<AttendeeEntry> attendeeEntries = new ArrayList<>();
 
 	/**
 	 * @return the entries
 	 */
-	public List<Entry> getEntries()
+	public List<AttendeeEntry> getEntries()
 	{
-		return entries;
+		return attendeeEntries;
 	}
 
 	/**
@@ -145,11 +145,12 @@ public class MainWindow
 
 		JButton btnNewButton = new JButton(new AbstractAction("Alle drucken")
 		{
+			private static final long serialVersionUID = 8657185749156956538L;
 
 			@Override
 			public void actionPerformed(final ActionEvent arg0)
 			{
-				entries.stream().filter(Entry::isPaid).forEach(Entry::print);
+				attendeeEntries.stream().filter(AttendeeEntry::isPaid).forEach(AttendeeEntry::print);
 			}
 
 		});
@@ -174,12 +175,18 @@ public class MainWindow
 		tabbedPaneLayout.gridy = 2;
 		tabbedPaneLayout.gridx = 0;
 		tabbedPane.add(scrollPane, scrollPaneLayout);
+		tabbedPane.setDisplayedMnemonicIndexAt(0, 0);
 		tabbedPane.setTitleAt(0, "Teilnehmer");
 		tabbedPane.setEnabledAt(0, true);
 		frame.getContentPane().add(tabbedPane, tabbedPaneLayout);
 
 		StatisticsTab panel = new StatisticsTab();
 		tabbedPane.addTab("Statistik", null, panel, null);
+		tabbedPane.setDisplayedMnemonicIndexAt(1, 0);
+
+		BandEntry bandEntry = new BandEntry();
+		tabbedPane.addTab("Bands", null, bandEntry, null);
+		tabbedPane.setDisplayedMnemonicIndexAt(2, 0);
 
 	}
 
@@ -203,10 +210,10 @@ public class MainWindow
 			{
 				EventQueue.invokeLater(() ->
 				{
-					Entry entry1 = new Entry();
+					AttendeeEntry entry1 = new AttendeeEntry();
 					entry1.setAlignmentY(Component.TOP_ALIGNMENT);
 					entry1.setAlignmentX(Component.LEFT_ALIGNMENT);
-					entries.add(entry1);
+					attendeeEntries.add(entry1);
 					entryList.add(entry1);
 					frame.revalidate();
 					frame.repaint();
@@ -229,7 +236,7 @@ public class MainWindow
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				CSVUtils.writeTicketEntriesToCsv(entries, new File(Config.getInstance().getCsvFile()));
+				CSVUtils.writeTicketEntriesToCsv(attendeeEntries, new File(Config.getInstance().getCsvFile()));
 			}
 		});
 	}
@@ -268,11 +275,11 @@ public class MainWindow
 			List<Ticket> tickets = CSVUtils.readCsvToTickets(csvFile);
 			for (Ticket ticket : tickets)
 			{
-				Entry entry1 = new Entry(ticket, entries.size() + 1);
+				AttendeeEntry entry1 = new AttendeeEntry(ticket, attendeeEntries.size() + 1);
 				entry1.setAlignmentY(Component.TOP_ALIGNMENT);
 				entry1.setAlignmentX(Component.LEFT_ALIGNMENT);
 				entryList.add(entry1);
-				entries.add(entry1);
+				attendeeEntries.add(entry1);
 			}
 
 			entryList.revalidate();
