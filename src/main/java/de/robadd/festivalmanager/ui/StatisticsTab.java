@@ -7,9 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thymeleaf.util.StringUtils;
 
-public class Statistics extends JPanel implements TabbedOnChangeListener
+public class StatisticsTab extends JPanel implements TabbedOnChangeListener
 {
-	private static final Logger LOG = LoggerFactory.getLogger(Statistics.class);
+	private static final Logger LOG = LoggerFactory.getLogger(StatisticsTab.class);
 	private static final long serialVersionUID = 1L;
 	private StatisticsEntry countEntry;
 	private StatisticsEntry countType1Entry;
@@ -22,7 +22,7 @@ public class Statistics extends JPanel implements TabbedOnChangeListener
 	private int countType1;
 	private int countType2;
 
-	public Statistics()
+	public StatisticsTab()
 	{
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 

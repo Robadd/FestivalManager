@@ -178,7 +178,7 @@ public class MainWindow
 		tabbedPane.setEnabledAt(0, true);
 		frame.getContentPane().add(tabbedPane, tabbedPaneLayout);
 
-		Statistics panel = new Statistics();
+		StatisticsTab panel = new StatisticsTab();
 		tabbedPane.addTab("Statistik", null, panel, null);
 
 	}

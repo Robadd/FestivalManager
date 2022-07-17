@@ -1,8 +1,9 @@
-package de.robadd.festivalmanager;
+package de.robadd.festivalmanager.updater;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -24,10 +25,9 @@ public class UpdaterTest
 	}
 
 	@Test
-	public void versionTest()
+	public void run()
 	{
-		// Assertions.assertThat(Updater.newerUpdate(oldV,
-		// newV)).isEqualTo(shouldUpdate);
+		Assertions.assertThat(Updater.newerUpdate(oldV, newV)).isEqualTo(shouldUpdate);
 	}
 
 	@Parameters

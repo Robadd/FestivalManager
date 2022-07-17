@@ -24,6 +24,8 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import de.robadd.festivalmanager.updater.Updater;
+
 public class UpdaterWindow
 {
 
@@ -84,6 +86,7 @@ public class UpdaterWindow
 	 */
 	private void initialize(final String newVersion)
 	{
+
 		frame = new JFrame();
 		frame.setBounds(100, 100, 500, 500);
 		frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -175,6 +178,7 @@ public class UpdaterWindow
 		frame.getContentPane().add(scrollPane, gbc_scrollPane);
 
 		JTextArea txtrAAA = new JTextArea();
+		txtrAAA.setText(Updater.getReleaseNotes("0.1.0"));
 		scrollPane.setViewportView(txtrAAA);
 		txtrAAA.setEditable(false);
 		txtrAAA.setLineWrap(true);
