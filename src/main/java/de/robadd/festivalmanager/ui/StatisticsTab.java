@@ -44,7 +44,7 @@ public class StatisticsTab extends JPanel implements TabbedOnChangeListener
 	}
 
 	@Override
-	public void focusChanged(final MainWindow window)
+	public void focusChanged(final AttendeesTab window)
 	{
 		count = 0;
 		paid = 0;

@@ -42,7 +42,7 @@ public class AttendeeEntry extends JPanel
 
 	public AttendeeEntry(final Ticket ticket, final int pos)
 	{
-		this();
+		this(pos);
 		personNameTextField.setText(ticket.getName());
 		if (ticket.getType() == 1)
 		{
@@ -56,12 +56,9 @@ public class AttendeeEntry extends JPanel
 		paidCheckbox.setSelected(ticket.isPaid());
 		printPdfButton.setEnabled(ticket.isPaid());
 		sentCheckbox.setSelected(ticket.isSent());
-
-		position = pos;
-		this.pos.setText(position.toString());
 	}
 
-	public AttendeeEntry()
+	public AttendeeEntry(final Integer position)
 	{
 		setPreferredSize(new Dimension(900, 20));
 		setMaximumSize(new Dimension(900, 20));
