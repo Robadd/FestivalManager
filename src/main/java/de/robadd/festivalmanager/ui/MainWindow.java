@@ -8,8 +8,8 @@ import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Panel;
 import java.awt.event.ActionEvent;
+import java.io.File;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -19,10 +19,17 @@ import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import de.robadd.festivalmanager.CSVUtils;
+import de.robadd.festivalmanager.Config;
+
 public class MainWindow
 {
-	private JFrame frame;
-	private JTabbedPane tabbedPane;
+	private JFrame frame = new JFrame();
+	private JTabbedPane tabbedPane = new JTabbedPane(TOP);
+	private AttendeesTab attendeesPane = new AttendeesTab();
+	private StatisticsTab settingsTab = new StatisticsTab();
+	private BandsTab bandsTab = new BandsTab();
+	private JPanel menuBar = new JPanel();
 
 	/**
 	 * Launch the application.
@@ -67,20 +74,7 @@ public class MainWindow
 	 */
 	private void initialize()
 	{
-		frame = new JFrame();
-		frame.setBounds(100, 100, 950, 504);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setTitle("RDH Festivalmanager");
-		GridBagLayout contentLayout = new GridBagLayout();
-		contentLayout.columnWidths = new int[]
-		{ 434, 0 };
-		contentLayout.rowHeights = new int[]
-		{ 0, 0, 141, 0 };
-		contentLayout.columnWeights = new double[]
-		{ 1.0, Double.MIN_VALUE };
-		contentLayout.rowWeights = new double[]
-		{ 0.0, 0.0, 1.0, 0.0 };
-		frame.getContentPane().setLayout(contentLayout);
+		initMainFrame();
 
 		GridBagConstraints menuBarLayout = new GridBagConstraints();
 		menuBarLayout.fill = GridBagConstraints.HORIZONTAL;
@@ -94,22 +88,35 @@ public class MainWindow
 		tabbedPaneLayout.gridy = 2;
 		tabbedPaneLayout.gridx = 0;
 
-		AttendeesTab attendeesPane = new AttendeesTab();
-		initTabbedPane(attendeesPane);
-		BandEntry bandEntry = new BandEntry();
-		StatisticsTab panel = new StatisticsTab();
+		initTabbedPane();
 
 		tabbedPane.addTab("Teilnehmer", null, attendeesPane, null);
-		tabbedPane.addTab("Statistik", null, panel, null);
-		tabbedPane.addTab("Bands", null, bandEntry, null);
+		tabbedPane.addTab("Statistik", null, settingsTab, null);
+		tabbedPane.addTab("Bands", null, bandsTab, null);
 
 		frame.getContentPane().add(tabbedPane, tabbedPaneLayout);
-		frame.getContentPane().add(menuBar(null), menuBarLayout);
+		frame.getContentPane().add(menuBar(), menuBarLayout);
 	}
 
-	private void initTabbedPane(final AttendeesTab attendeesPane)
+	private void initMainFrame()
 	{
-		tabbedPane = new JTabbedPane(TOP);
+		frame.setBounds(100, 100, 950, 504);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setTitle("RDH Festivalmanager");
+		GridBagLayout contentLayout = new GridBagLayout();
+		contentLayout.columnWidths = new int[]
+		{ 434, 0 };
+		contentLayout.rowHeights = new int[]
+		{ 0, 0, 141, 0 };
+		contentLayout.columnWeights = new double[]
+		{ 1.0, Double.MIN_VALUE };
+		contentLayout.rowWeights = new double[]
+		{ 0.0, 0.0, 1.0, 0.0 };
+		frame.getContentPane().setLayout(contentLayout);
+	}
+
+	private void initTabbedPane()
+	{
 		tabbedPane.addChangeListener(arg0 ->
 		{
 			Component component = tabbedPane.getComponent(tabbedPane.getSelectedIndex());
@@ -120,12 +127,11 @@ public class MainWindow
 		});
 	}
 
-	private JPanel menuBar(final Panel entryList)
+	private JPanel menuBar()
 	{
-		JPanel menuBar = new JPanel();
-		menuBar.add(loadMenu(entryList));
+		menuBar.add(loadMenu());
 		menuBar.add(saveMenu());
-		menuBar.add(new JButton(settingsAction()));
+		menuBar.add(settingsAction());
 		return menuBar;
 	}
 
@@ -138,13 +144,12 @@ public class MainWindow
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				// CSVUtils.writeTicketEntriesToCsv(attendeeEntries, new
-				// File(Config.getInstance().getCsvFile()));
+				CSVUtils.writeTicketEntriesToCsv(attendeesPane.getEntries(), new File(Config.getInstance().getCsvFile()));
 			}
 		});
 	}
 
-	private JButton loadMenu(final Panel entryList)
+	private JButton loadMenu()
 	{
 		return new JButton(new AbstractAction("Laden")
 		{
@@ -153,15 +158,15 @@ public class MainWindow
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				// loadEntriesFromCsv(entryList);
+				attendeesPane.loadEntriesFromCsv();
 			}
 
 		});
 	}
 
-	private AbstractAction settingsAction()
+	private JButton settingsAction()
 	{
-		return new AbstractAction("Einstellungen")
+		return new JButton(new AbstractAction("Einstellungen")
 		{
 			private static final long serialVersionUID = 1005967898920124523L;
 
@@ -179,6 +184,6 @@ public class MainWindow
 				});
 
 			}
-		};
+		});
 	}
 }

@@ -2,7 +2,6 @@ package de.robadd.festivalmanager.ui;
 
 import java.awt.Component;
 import java.awt.EventQueue;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -29,6 +28,12 @@ public class AttendeesTab extends JPanel
 {
 	private static final long serialVersionUID = 2113186135796490710L;
 	private List<AttendeeEntry> attendeeEntries = new ArrayList<>();
+	private Panel entryList = new Panel();
+	private ScrollPane scrollPane = new ScrollPane();
+	private JPanel bottom = new JPanel();
+
+	private JButton btnNewButton;
+	private JButton addTicketButton;
 
 	/**
 	 * @return the entries
@@ -40,6 +45,57 @@ public class AttendeesTab extends JPanel
 
 	public AttendeesTab()
 	{
+		setMainLayout();
+		entryList.setLayout(new BoxLayout(entryList, BoxLayout.Y_AXIS));
+		scrollPane.add(entryList, entryListLayout());
+		add(scrollPane, scrollPaneLayout());
+		add(bottom, bottomLayout());
+		initPrintAllButton();
+		initAddTicketButton();
+		initBottomPanel();
+		loadEntriesFromCsv();
+	}
+
+	private void initBottomPanel()
+	{
+		bottom.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		bottom.add(addTicketButton);
+		bottom.add(btnNewButton);
+	}
+
+	private GridBagConstraints bottomLayout()
+	{
+		GridBagConstraints bottomLayout = new GridBagConstraints();
+		bottomLayout.anchor = GridBagConstraints.SOUTH;
+		bottomLayout.gridx = 0;
+		bottomLayout.gridy = 1;
+		return bottomLayout;
+	}
+
+	private GridBagConstraints scrollPaneLayout()
+	{
+		GridBagConstraints scrollPaneLayout = new GridBagConstraints();
+		scrollPaneLayout.anchor = GridBagConstraints.NORTHWEST;
+		scrollPaneLayout.insets = new Insets(2, 2, 5, 2);
+		scrollPaneLayout.fill = GridBagConstraints.BOTH;
+		scrollPaneLayout.gridx = 0;
+		scrollPaneLayout.gridy = 0;
+		return scrollPaneLayout;
+	}
+
+	private GridBagConstraints entryListLayout()
+	{
+		GridBagConstraints entryListConstraints = new GridBagConstraints();
+		entryListConstraints.anchor = GridBagConstraints.NORTH;
+		entryListConstraints.fill = GridBagConstraints.HORIZONTAL;
+		entryListConstraints.insets = new Insets(0, 0, 5, 0);
+		entryListConstraints.gridx = 0;
+		entryListConstraints.gridy = 0;
+		return entryListConstraints;
+	}
+
+	private void setMainLayout()
+	{
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]
 		{ 175, 0 };
@@ -50,66 +106,23 @@ public class AttendeesTab extends JPanel
 		gridBagLayout.rowWeights = new double[]
 		{ 1.0, 0.0, Double.MIN_VALUE };
 		setLayout(gridBagLayout);
-
-		Panel entryList = new Panel();
-		GridBagConstraints entryListLayout = new GridBagConstraints();
-		entryListLayout.insets = new Insets(0, 0, 5, 0);
-		entryListLayout.gridx = 0;
-		entryListLayout.gridy = 0;
-		entryListLayout.anchor = GridBagConstraints.NORTH;
-
-		JButton btnNewButton = addButton();
-		ScrollPane scrollPane = new ScrollPane();
-		GridBagConstraints scrollPaneLayout = new GridBagConstraints();
-		scrollPaneLayout.anchor = GridBagConstraints.NORTHWEST;
-		scrollPaneLayout.insets = new Insets(2, 2, 5, 2);
-		scrollPaneLayout.fill = GridBagConstraints.BOTH;
-		scrollPaneLayout.gridx = 0;
-		scrollPaneLayout.gridy = 0;
-		GridBagConstraints entryListConstraints = new GridBagConstraints();
-		entryListConstraints.anchor = GridBagConstraints.NORTH;
-		entryListConstraints.fill = GridBagConstraints.HORIZONTAL;
-		entryListConstraints.insets = new Insets(0, 0, 5, 0);
-		entryListConstraints.gridx = 0;
-		entryListConstraints.gridy = 0;
-		scrollPane.add(entryList, entryListConstraints);
-		entryList.setLayout(new BoxLayout(entryList, BoxLayout.Y_AXIS));
-		JPanel bottom = new JPanel();
-		bottom.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-		FlowLayout flowLayout = (FlowLayout) bottom.getLayout();
-		flowLayout.setAlignment(FlowLayout.TRAILING);
-
-		GridBagConstraints bottomLayout = new GridBagConstraints();
-		bottomLayout.anchor = GridBagConstraints.SOUTH;
-		bottomLayout.gridx = 0;
-		bottomLayout.gridy = 1;
-		loadEntriesFromCsv(entryList);
-		add(bottom, bottomLayout);
-		bottom.add(addTicketButton(entryList));
-		bottom.add(btnNewButton);
-
-		add(scrollPane, scrollPaneLayout);
-
-		// entryList.add(new AttendeeEntry(0));
-
 	}
 
-	private JButton addButton()
+	private void initPrintAllButton()
 	{
-		return new JButton(new AbstractAction("Alle drucken")
+		btnNewButton = new JButton(new AbstractAction("Alle drucken")
 		{
-			private static final long serialVersionUID = 8657185749156956538L;
+			private static final long serialVersionUID = 6508625854759145758L;
 
 			@Override
 			public void actionPerformed(final ActionEvent arg0)
 			{
 				attendeeEntries.stream().filter(AttendeeEntry::isPaid).forEach(AttendeeEntry::print);
 			}
-
 		});
 	}
 
-	private void loadEntriesFromCsv(final Panel entryList)
+	void loadEntriesFromCsv()
 	{
 		EventQueue.invokeLater(() ->
 		{
@@ -140,9 +153,9 @@ public class AttendeesTab extends JPanel
 		});
 	}
 
-	private JButton addTicketButton(final Panel entryList)
+	private void initAddTicketButton()
 	{
-		JButton addTicketButton = new JButton(new AbstractAction("+")
+		addTicketButton = new JButton(new AbstractAction("+")
 		{
 			private static final long serialVersionUID = 1L;
 
@@ -165,7 +178,6 @@ public class AttendeesTab extends JPanel
 		addTicketButton.setAlignmentY(Component.BOTTOM_ALIGNMENT);
 
 		addTicketButton.setHorizontalAlignment(SwingConstants.LEFT);
-		return addTicketButton;
 	}
 
 }
