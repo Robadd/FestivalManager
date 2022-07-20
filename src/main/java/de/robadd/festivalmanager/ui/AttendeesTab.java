@@ -126,7 +126,7 @@ public class AttendeesTab extends JPanel
 	{
 		EventQueue.invokeLater(() ->
 		{
-			File csvFile = new File(Config.getInstance().getCsvFile());
+			File csvFile = new File(Config.getInstance().getAttendeesCsvFile());
 			if (!csvFile.exists())
 			{
 				try
@@ -138,7 +138,7 @@ public class AttendeesTab extends JPanel
 					e.printStackTrace();
 				}
 			}
-			List<Ticket> tickets = CSVUtils.readCsvToTickets(csvFile);
+			List<Ticket> tickets = CSVUtils.readFromCsv(csvFile, Ticket.class);
 			for (Ticket ticket : tickets)
 			{
 				AttendeeEntry entry1 = new AttendeeEntry(ticket, attendeeEntries.size() + 1);

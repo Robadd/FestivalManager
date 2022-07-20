@@ -144,7 +144,8 @@ public class MainWindow
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				CSVUtils.writeTicketEntriesToCsv(attendeesPane.getEntries(), new File(Config.getInstance().getCsvFile()));
+				CSVUtils.writeToCsv(attendeesPane.getEntries(), new File(Config.getInstance().getAttendeesCsvFile()));
+				CSVUtils.writeToCsv(bandsTab.getEntries(), new File(Config.getInstance().getBandsCsvFile()));
 			}
 		});
 	}

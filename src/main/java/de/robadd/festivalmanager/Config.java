@@ -18,7 +18,8 @@ public class Config
 	private static final Config INSTANCE = new Config();
 	Map<String, String> map = new HashMap<>();
 	private static final String SAVE_PATH = "savePath";
-	private static final String CSV_FILE = "csvFile";
+	private static final String ATTENDEES_CSV_FILE = "csvFile";
+	private static final String BANDS_CSV_FILE = "bandsCsvFile";
 	private static final String CHROME_PATH = "chromePath";
 	private static final String SECRET_KEY = "secretKey";
 
@@ -34,7 +35,7 @@ public class Config
 			else if (file.createNewFile())
 			{
 				final String path = Main.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-				setCsvFile(new File(new File(URLDecoder.decode(path, UTF_8)).getParentFile().getPath(), "2022.csv")
+				setAttendeesCsvFile(new File(new File(URLDecoder.decode(path, UTF_8)).getParentFile().getPath(), "2022.csv")
 						.getPath());
 				setSavePath(new File(URLDecoder.decode(path, UTF_8)).getParentFile().getPath() + "\\");
 				saveIni();
@@ -89,9 +90,9 @@ public class Config
 		setParam(SAVE_PATH, path);
 	}
 
-	public void setCsvFile(final String path)
+	public void setAttendeesCsvFile(final String path)
 	{
-		setParam(CSV_FILE, path);
+		setParam(ATTENDEES_CSV_FILE, path);
 	}
 
 	public String getSavePath()
@@ -99,9 +100,19 @@ public class Config
 		return getValue(SAVE_PATH);
 	}
 
-	public String getCsvFile()
+	public String getAttendeesCsvFile()
 	{
-		return getValue(CSV_FILE);
+		return getValue(ATTENDEES_CSV_FILE);
+	}
+
+	public void setBandsCsvFile(final String path)
+	{
+		setParam(BANDS_CSV_FILE, path);
+	}
+
+	public String getBandsCsvFile()
+	{
+		return getValue(BANDS_CSV_FILE);
 	}
 
 	public void setParam(final String key, final String value)

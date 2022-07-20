@@ -22,12 +22,13 @@ import javax.swing.SwingConstants;
 
 import org.apache.commons.io.FileUtils;
 
+import de.robadd.festivalmanager.CSVWritable;
 import de.robadd.festivalmanager.Config;
 import de.robadd.festivalmanager.Main;
 import de.robadd.festivalmanager.PDFWriter;
 import de.robadd.festivalmanager.Ticket;
 
-public class AttendeeEntry extends JPanel
+public class AttendeeEntry extends JPanel implements CSVWritable
 {
 	private static final long serialVersionUID = -6083595259931310400L;
 	private Integer position = 0;
@@ -38,11 +39,12 @@ public class AttendeeEntry extends JPanel
 	private JCheckBox paidCheckbox;
 	private JButton printPdfButton;
 	private JCheckBox sentCheckbox;
-	private JLabel pos;
+	private JLabel pos = new JLabel();
 
 	public AttendeeEntry(final Ticket ticket, final int pos)
 	{
 		this(pos);
+
 		personNameTextField.setText(ticket.getName());
 		if (ticket.getType() == 1)
 		{
@@ -60,6 +62,7 @@ public class AttendeeEntry extends JPanel
 
 	public AttendeeEntry(final Integer position)
 	{
+		this.position = position;
 		setPreferredSize(new Dimension(900, 20));
 		setMaximumSize(new Dimension(900, 20));
 
@@ -75,7 +78,7 @@ public class AttendeeEntry extends JPanel
 		{ 0.0, Double.MIN_VALUE };
 		setLayout(gridBagLayout);
 
-		pos = new JLabel(position.toString());
+		// pos = new JLabel(position.toString());
 		personNameTextField = new JTextField(10);
 		personNameTextField.setPreferredSize(new Dimension(100, 20));
 		personNameTextField.setMaximumSize(new Dimension(100, 20));
@@ -129,6 +132,7 @@ public class AttendeeEntry extends JPanel
 		add(paidCheckbox, layout3);
 		add(printPdfButton, layout4);
 		add(sentCheckbox, layout5);
+		pos.setText(position.toString());
 	}
 
 	private JButton printPdfButton()
@@ -206,7 +210,27 @@ public class AttendeeEntry extends JPanel
 		return tShirtCheckbox.isSelected();
 	}
 
-	public String toCsvLine()
+	@Override
+	public void fillfromCsv(final String line)
+	{
+		Ticket ticket = new Ticket(line);
+		personNameTextField.setText(ticket.getName());
+		if (ticket.getType() == 1)
+		{
+			type1Day.setSelected(true);
+		}
+		else if (ticket.getType() == 2)
+		{
+			type3Day.setSelected(true);
+		}
+		tShirtCheckbox.setSelected(ticket.getTShirt());
+		paidCheckbox.setSelected(ticket.isPaid());
+		printPdfButton.setEnabled(ticket.isPaid());
+		sentCheckbox.setSelected(ticket.isSent());
+	}
+
+	@Override
+	public String toCsv()
 	{
 		return new Ticket(
 				getPersonName(),

@@ -7,22 +7,33 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import de.robadd.festivalmanager.ui.AttendeeEntry;
-
 public class CSVUtils
 {
 	private CSVUtils()
 	{
 	}
 
-	public static List<Ticket> readCsvToTickets(final File csvFile)
+	public static <T extends CSVWritable> List<T> readFromCsv(final File csvFile, final Class<T> clazz)
 	{
-		List<Ticket> retVal = new ArrayList<>();
+		List<T> retVal = new ArrayList<>();
 
 		try
 		{
 			Files.readAllLines(csvFile.toPath()).stream()
-					.map(Ticket::new)
+					.map(e ->
+					{
+						try
+						{
+							T newInstance = clazz.newInstance();
+							newInstance.fillfromCsv(e);
+							return newInstance;
+						}
+						catch (InstantiationException | IllegalAccessException e1)
+						{
+							e1.printStackTrace();
+							return null;
+						}
+					})
 					.forEach(retVal::add);
 		}
 		catch (IOException e)
@@ -32,11 +43,11 @@ public class CSVUtils
 		return retVal;
 	}
 
-	public static void writeTicketsToCsv(final List<Ticket> tickets, final File file)
+	public static <T extends CSVWritable> void writeToCsv(final List<T> tickets, final File file)
 	{
 		try
 		{
-			Files.write(file.toPath(), tickets.stream().map(Ticket::toCsv).collect(Collectors.toList()));
+			Files.write(file.toPath(), tickets.stream().map(CSVWritable::toCsv).collect(Collectors.toList()));
 		}
 		catch (IOException e)
 		{
@@ -44,15 +55,4 @@ public class CSVUtils
 		}
 	}
 
-	public static void writeTicketEntriesToCsv(final List<AttendeeEntry> tickets, final File file)
-	{
-		try
-		{
-			Files.write(file.toPath(), tickets.stream().map(AttendeeEntry::toCsvLine).collect(Collectors.toList()));
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-	}
 }

@@ -2,7 +2,7 @@ package de.robadd.festivalmanager;
 
 import java.text.MessageFormat;
 
-public class Ticket
+public class Ticket implements CSVWritable
 {
 	private String name;
 	private Integer type;
@@ -10,6 +10,11 @@ public class Ticket
 	private String hash;
 	private Boolean paid = false;
 	private Boolean sent = false;
+
+	public Ticket()
+	{
+
+	}
 
 	public Ticket(final String csv)
 	{
@@ -87,6 +92,7 @@ public class Ticket
 		this.sent = sent;
 	}
 
+	@Override
 	public String toCsv()
 	{
 		return MessageFormat.format("{0};{1};{2};{3};{4}", name, type, tShirt, paid, sent);
@@ -116,6 +122,18 @@ public class Ticket
 		this.tShirt = tShirt;
 		this.paid = paid;
 		this.sent = sent;
+		hash = Crypto.generateHash(name, type, tShirt);
+	}
+
+	@Override
+	public void fillfromCsv(final String line)
+	{
+		String[] values = line.split(";");
+		name = values[0];
+		type = Integer.valueOf(values[1]);
+		tShirt = Boolean.parseBoolean(values[2]);
+		paid = Boolean.parseBoolean(values[3]);
+		sent = Boolean.parseBoolean(values[4]);
 		hash = Crypto.generateHash(name, type, tShirt);
 	}
 }
