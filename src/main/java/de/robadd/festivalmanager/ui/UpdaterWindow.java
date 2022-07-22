@@ -24,167 +24,140 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.robadd.festivalmanager.updater.Updater;
 
-public class UpdaterWindow
+public final class UpdaterWindow
 {
+    private static final Logger LOG = LoggerFactory.getLogger(UpdaterWindow.class);
+    private JFrame frame;
+    private final List<AttendeeEntry> attendeeEntries = new ArrayList<>();
 
-	private JFrame frame;
-	private List<AttendeeEntry> attendeeEntries = new ArrayList<>();
+    /**
+     * @return the entries
+     */
+    public List<AttendeeEntry> getEntries()
+    {
+        return attendeeEntries;
+    }
 
-	/**
-	 * @return the entries
-	 */
-	public List<AttendeeEntry> getEntries()
-	{
-		return attendeeEntries;
-	}
+    public static void main(final String newVersion) throws ClassNotFoundException, InstantiationException,
+            IllegalAccessException,
+            UnsupportedLookAndFeelException
+    {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        EventQueue.invokeLater(() ->
+        {
+            try
+            {
+                final UpdaterWindow window = new UpdaterWindow(newVersion);
+                window.frame.setVisible(true);
+            }
+            catch (final Exception e)
+            {
+                LOG.error("Could not initalize Updater Window", e);
+            }
+        });
+    }
 
-	/**
-	 * Launch the application.
-	 *
-	 * @throws UnsupportedLookAndFeelException
-	 * @throws IllegalAccessException
-	 * @throws InstantiationException
-	 * @throws ClassNotFoundException
-	 *
-	 * @throws Exception
-	 */
-	public static void main(final String newVersion) throws ClassNotFoundException, InstantiationException,
-			IllegalAccessException,
-			UnsupportedLookAndFeelException
-	{
-		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		EventQueue.invokeLater(() ->
-		{
-			try
-			{
-				UpdaterWindow window = new UpdaterWindow(newVersion);
-				window.frame.setVisible(true);
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-		});
-	}
+    public UpdaterWindow(final String newVersion)
+    {
+        initialize(newVersion);
+    }
 
-	/**
-	 * Create the application.
-	 *
-	 * @wbp.parser.entryPoint
-	 */
-	public UpdaterWindow(final String newVersion)
-	{
-		initialize(newVersion);
-	}
+    /**
+     * Initialize the contents of the frame.
+     *
+     * @param newVersion
+     */
+    private void initialize(final String newVersion)
+    {
+        frame = new JFrame();
+        frame.setBounds(100, 100, 500, 500);
+        frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        frame.setTitle("Update");
 
-	/**
-	 * Initialize the contents of the frame.
-	 *
-	 * @param newVersion
-	 */
-	private void initialize(final String newVersion)
-	{
+        final GridBagLayout frameLayout = new GridBagLayout();
+        frameLayout.columnWidths = new int[] {434, 0};
+        frameLayout.rowHeights = new int[] {0, 141, 0, 10, 0};
+        frameLayout.columnWeights = new double[] {1.0, Double.MIN_VALUE};
+        frameLayout.rowWeights = new double[] {0.0, 1.0, 0.0, 0.0, 0.0};
+        frame.getContentPane().setLayout(frameLayout);
 
-		frame = new JFrame();
-		frame.setBounds(100, 100, 500, 500);
-		frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		frame.setTitle("Update");
-		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]
-		{ 434, 0 };
-		gridBagLayout.rowHeights = new int[]
-		{ 0, 141, 0, 10, 0 };
-		gridBagLayout.columnWeights = new double[]
-		{ 1.0, Double.MIN_VALUE };
-		gridBagLayout.rowWeights = new double[]
-		{ 0.0, 1.0, 0.0, 0.0, 0.0 };
-		frame.getContentPane().setLayout(gridBagLayout);
+        final JLabel newLabel = new JLabel("Neue Version Verf\u00FCgbar:");
+        newLabel.setFont(UIManager.getFont("FormattedTextField.font"));
 
-		JLabel lblNewLabel = new JLabel("Neue Version Verf\u00FCgbar:");
-		lblNewLabel.setFont(UIManager.getFont("FormattedTextField.font"));
-		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
-		gbc_lblNewLabel.anchor = GridBagConstraints.NORTHWEST;
-		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 0);
-		gbc_lblNewLabel.gridx = 0;
-		gbc_lblNewLabel.gridy = 0;
+        final JPanel mainPanel = new JPanel();
+        final GridBagConstraints mainPanelLayout = new GridBagConstraints();
+        mainPanelLayout.insets = new Insets(5, 5, 5, 0);
+        mainPanelLayout.ipady = 5;
+        mainPanelLayout.ipadx = 5;
+        mainPanelLayout.anchor = GridBagConstraints.WEST;
+        mainPanelLayout.fill = GridBagConstraints.HORIZONTAL;
+        mainPanelLayout.gridx = 0;
+        mainPanelLayout.gridy = 0;
 
-		JPanel panel = new JPanel();
-		GridBagConstraints gbc_panel = new GridBagConstraints();
-		gbc_panel.insets = new Insets(5, 5, 5, 0);
-		gbc_panel.ipady = 5;
-		gbc_panel.ipadx = 5;
-		gbc_panel.anchor = GridBagConstraints.WEST;
-		gbc_panel.fill = GridBagConstraints.HORIZONTAL;
-		gbc_panel.gridx = 0;
-		gbc_panel.gridy = 0;
+        final JLabel newVersionLabelVersion = new JLabel(newVersion);
+        newVersionLabelVersion.setVerticalAlignment(SwingConstants.TOP);
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
-		JLabel lblNewLabel_1 = new JLabel(newVersion);
-		lblNewLabel_1.setVerticalAlignment(SwingConstants.TOP);
-		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
-		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 0);
-		gbc_lblNewLabel_1.anchor = GridBagConstraints.PAGE_START;
-		gbc_lblNewLabel_1.gridx = 0;
-		gbc_lblNewLabel_1.gridy = 0;
-		gbc_lblNewLabel_1.ipadx = 5;
-		gbc_lblNewLabel_1.ipady = 5;
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        final JLabel releaseNotesLabel = new JLabel("Neuerungen:");
 
-		JLabel lblNewLabel_2 = new JLabel("Neuerungen:");
+        final JButton installButton = new JButton("Update installieren");
+        final GridBagConstraints installButtonLayout = new GridBagConstraints();
+        installButtonLayout.insets = new Insets(0, 0, 5, 0);
+        installButtonLayout.gridx = 0;
+        installButtonLayout.gridy = 2;
 
-		JButton btnNewButton_1 = new JButton("Update installieren");
-		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
-		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 0);
-		gbc_btnNewButton_1.gridx = 0;
-		gbc_btnNewButton_1.gridy = 2;
+        final JSeparator separator = new JSeparator();
+        final GridBagConstraints separatorLayout = new GridBagConstraints();
+        separatorLayout.insets = new Insets(0, 0, 5, 0);
+        separatorLayout.gridx = 0;
+        separatorLayout.gridy = 3;
+        final Dimension d = separator.getPreferredSize();
+        d.height = 10;
+        separator.setPreferredSize(d);
 
-		JSeparator separator = new JSeparator();
-		GridBagConstraints gbc_separator = new GridBagConstraints();
-		gbc_separator.insets = new Insets(0, 0, 5, 0);
-		gbc_separator.gridx = 0;
-		gbc_separator.gridy = 3;
-		Dimension d = separator.getPreferredSize();
-		d.height = 10;
-		separator.setPreferredSize(d);
+        final JButton closeButton = new JButton(new AbstractAction("Schlie\u00DFen")
+        {
+            private static final long serialVersionUID = -3799989684779093484L;
 
-		JButton btnNewButton = new JButton(new AbstractAction("Schlie\u00DFen")
-		{
-			private static final long serialVersionUID = -3799989684779093484L;
+            @Override
+            public void actionPerformed(final ActionEvent e)
+            {
+                frame.setVisible(false);
+            }
 
-			@Override
-			public void actionPerformed(final ActionEvent e)
-			{
-				frame.setVisible(false);
-			}
+        });
+        final GridBagConstraints closeButtonLayout = new GridBagConstraints();
+        closeButtonLayout.anchor = GridBagConstraints.EAST;
+        closeButtonLayout.gridx = 0;
+        closeButtonLayout.gridy = 4;
 
-		});
-		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
-		gbc_btnNewButton.anchor = GridBagConstraints.EAST;
-		gbc_btnNewButton.gridx = 0;
-		gbc_btnNewButton.gridy = 4;
+        mainPanel.add(newLabel);
+        mainPanel.add(newVersionLabelVersion);
+        mainPanel.add(releaseNotesLabel);
+        frame.getContentPane().add(mainPanel, mainPanelLayout);
 
-		panel.add(lblNewLabel);
-		panel.add(lblNewLabel_1);
-		panel.add(lblNewLabel_2);
-		frame.getContentPane().add(panel, gbc_panel);
+        final JScrollPane scrollPane = new JScrollPane();
+        final GridBagConstraints scrollPaneLayout = new GridBagConstraints();
+        scrollPaneLayout.fill = GridBagConstraints.BOTH;
+        scrollPaneLayout.insets = new Insets(0, 5, 5, 5);
+        scrollPaneLayout.gridx = 0;
+        scrollPaneLayout.gridy = 1;
+        frame.getContentPane().add(scrollPane, scrollPaneLayout);
 
-		JScrollPane scrollPane = new JScrollPane();
-		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-		gbc_scrollPane.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane.insets = new Insets(0, 5, 5, 5);
-		gbc_scrollPane.gridx = 0;
-		gbc_scrollPane.gridy = 1;
-		frame.getContentPane().add(scrollPane, gbc_scrollPane);
+        final JTextArea releaseNotesTextArea = new JTextArea();
+        releaseNotesTextArea.setText(Updater.getReleaseNotes("0.1.0"));
+        scrollPane.setViewportView(releaseNotesTextArea);
+        releaseNotesTextArea.setEditable(false);
+        releaseNotesTextArea.setLineWrap(true);
 
-		JTextArea txtrAAA = new JTextArea();
-		txtrAAA.setText(Updater.getReleaseNotes("0.1.0"));
-		scrollPane.setViewportView(txtrAAA);
-		txtrAAA.setEditable(false);
-		txtrAAA.setLineWrap(true);
-		frame.getContentPane().add(btnNewButton_1, gbc_btnNewButton_1);
-		frame.getContentPane().add(separator, gbc_separator);
-		frame.getContentPane().add(btnNewButton, gbc_btnNewButton);
-	}
+        frame.getContentPane().add(installButton, installButtonLayout);
+        frame.getContentPane().add(separator, separatorLayout);
+        frame.getContentPane().add(closeButton, closeButtonLayout);
+    }
 
 }

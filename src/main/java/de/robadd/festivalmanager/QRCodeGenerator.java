@@ -14,24 +14,25 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
-public class QRCodeGenerator
+public final class QRCodeGenerator
 {
 
-	private QRCodeGenerator()
-	{
-	}
+    private QRCodeGenerator()
+    {
+    }
 
-	public static File generateQrCode(final String savePath, final String name, final Ticket ticket)
-			throws WriterException, IOException
-	{
-		final QRCodeWriter barcodeWriter = new QRCodeWriter();
-		final BitMatrix bitMatrix = barcodeWriter.encode(
-			Base64.getEncoder().encodeToString(ticket.toString().getBytes(StandardCharsets.UTF_8)), BarcodeFormat.QR_CODE,
-			200, 200);
-		final BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
-		final File outputfile = new File(savePath + name + ".png");
-		ImageIO.write(bufferedImage, "png", outputfile);
-		return outputfile;
-	}
+    public static File generateQrCode(final String savePath, final String name, final Ticket ticket)
+            throws WriterException, IOException
+    {
+        final QRCodeWriter barcodeWriter = new QRCodeWriter();
+        final BitMatrix bitMatrix = barcodeWriter.encode(
+            Base64.getEncoder().encodeToString(ticket.toString().getBytes(StandardCharsets.UTF_8)),
+            BarcodeFormat.QR_CODE,
+            200, 200);
+        final BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
+        final File outputfile = new File(savePath + name + ".png");
+        ImageIO.write(bufferedImage, "png", outputfile);
+        return outputfile;
+    }
 
 }

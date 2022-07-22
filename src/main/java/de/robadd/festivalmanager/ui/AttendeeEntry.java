@@ -28,215 +28,216 @@ import de.robadd.festivalmanager.Main;
 import de.robadd.festivalmanager.PDFWriter;
 import de.robadd.festivalmanager.Ticket;
 
-public class AttendeeEntry extends JPanel implements CSVWritable
+public final class AttendeeEntry extends JPanel implements CSVWritable
 {
-	private static final long serialVersionUID = -6083595259931310400L;
-	private Integer position = 0;
-	private JTextField personNameTextField;
-	private JRadioButton type1Day;
-	private JRadioButton type3Day;
-	private JCheckBox tShirtCheckbox;
-	private JCheckBox paidCheckbox;
-	private JButton printPdfButton;
-	private JCheckBox sentCheckbox;
-	private JLabel pos = new JLabel();
+    private static final long serialVersionUID = -6083595259931310400L;
+    private Integer position = 0;
+    private JTextField personNameTextField;
+    private JRadioButton type1Day;
+    private JRadioButton type3Day;
+    private JCheckBox tShirtCheckbox;
+    private JCheckBox paidCheckbox;
+    private JButton printPdfButton;
+    private JCheckBox sentCheckbox;
+    private JLabel pos = new JLabel();
 
-	public AttendeeEntry(final Ticket ticket, final int pos)
-	{
-		this(pos);
+    public AttendeeEntry(final Ticket ticket, final int pos)
+    {
+        this(pos);
 
-		personNameTextField.setText(ticket.getName());
-		if (ticket.getType() == 1)
-		{
-			type1Day.setSelected(true);
-		}
-		else if (ticket.getType() == 2)
-		{
-			type3Day.setSelected(true);
-		}
-		tShirtCheckbox.setSelected(ticket.getTShirt());
-		paidCheckbox.setSelected(ticket.isPaid());
-		printPdfButton.setEnabled(ticket.isPaid());
-		sentCheckbox.setSelected(ticket.isSent());
-	}
+        personNameTextField.setText(ticket.getName());
+        if (ticket.getType() == 1)
+        {
+            type1Day.setSelected(true);
+        }
+        else if (ticket.getType() == 2)
+        {
+            type3Day.setSelected(true);
+        }
+        tShirtCheckbox.setSelected(ticket.getTShirt());
+        paidCheckbox.setSelected(ticket.isPaid());
+        printPdfButton.setEnabled(ticket.isPaid());
+        sentCheckbox.setSelected(ticket.isSent());
+    }
 
-	public AttendeeEntry(final Integer position)
-	{
-		this.position = position;
-		setPreferredSize(new Dimension(900, 20));
-		setMaximumSize(new Dimension(900, 20));
+    public AttendeeEntry(final Integer position)
+    {
+        this();
+        this.position = position;
+    }
 
-		ButtonGroup type = new ButtonGroup();
-		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]
-		{ 20, 131, 131, 131, 131, 131, 131 };
-		gridBagLayout.rowHeights = new int[]
-		{ 20, 0 };
-		gridBagLayout.columnWeights = new double[]
-		{ 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE };
-		gridBagLayout.rowWeights = new double[]
-		{ 0.0, Double.MIN_VALUE };
-		setLayout(gridBagLayout);
+    public AttendeeEntry()
+    {
+        setPreferredSize(new Dimension(900, 20));
+        setMaximumSize(new Dimension(900, 20));
 
-		// pos = new JLabel(position.toString());
-		personNameTextField = new JTextField(10);
-		personNameTextField.setPreferredSize(new Dimension(100, 20));
-		personNameTextField.setMaximumSize(new Dimension(100, 20));
-		personNameTextField.setHorizontalAlignment(SwingConstants.LEFT);
+        ButtonGroup type = new ButtonGroup();
+        GridBagLayout gridBagLayout = new GridBagLayout();
+        gridBagLayout.columnWidths = new int[] {20, 131, 131, 131, 131, 131, 131};
+        gridBagLayout.rowHeights = new int[] {20, 0};
+        gridBagLayout.columnWeights = new double[] {1.0, 1.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
+        gridBagLayout.rowWeights = new double[] {0.0, Double.MIN_VALUE};
+        setLayout(gridBagLayout);
 
-		GridBagConstraints personNameTextFieldLayout = new GridBagConstraints();
-		personNameTextFieldLayout.fill = GridBagConstraints.BOTH;
-		personNameTextFieldLayout.gridx = 1;
-		personNameTextFieldLayout.gridy = 0;
+        // pos = new JLabel(position.toString());
+        personNameTextField = new JTextField(10);
+        personNameTextField.setPreferredSize(new Dimension(100, 20));
+        personNameTextField.setMaximumSize(new Dimension(100, 20));
+        personNameTextField.setHorizontalAlignment(SwingConstants.LEFT);
 
-		type1Day = new JRadioButton("1 Tag");
-		type3Day = new JRadioButton("3 Tage");
-		type.add(type1Day);
-		type.add(type3Day);
+        GridBagConstraints personNameTextFieldLayout = new GridBagConstraints();
+        personNameTextFieldLayout.fill = GridBagConstraints.BOTH;
+        personNameTextFieldLayout.gridx = 1;
+        personNameTextFieldLayout.gridy = 0;
 
-		JPanel typePanel = new JPanel();
-		FlowLayout flowLayout = (FlowLayout) typePanel.getLayout();
-		flowLayout.setVgap(0);
-		flowLayout.setHgap(0);
+        type1Day = new JRadioButton("1 Tag");
+        type3Day = new JRadioButton("3 Tage");
+        type.add(type1Day);
+        type.add(type3Day);
 
-		tShirtCheckbox = new JCheckBox("T-Shirt");
-		tShirtCheckbox.setHorizontalAlignment(SwingConstants.CENTER);
+        JPanel typePanel = new JPanel();
+        FlowLayout flowLayout = (FlowLayout) typePanel.getLayout();
+        flowLayout.setVgap(0);
+        flowLayout.setHgap(0);
 
-		paidCheckbox = new JCheckBox(new AbstractAction("Bezahlt")
-		{
-			private static final long serialVersionUID = 1L;
+        tShirtCheckbox = new JCheckBox("T-Shirt");
+        tShirtCheckbox.setHorizontalAlignment(SwingConstants.CENTER);
 
-			@Override
-			public void actionPerformed(final ActionEvent e)
-			{
-				printPdfButton.setEnabled(((JCheckBox) e.getSource()).isSelected());
-			}
-		});
+        paidCheckbox = new JCheckBox(new AbstractAction("Bezahlt")
+        {
+            private static final long serialVersionUID = 1L;
 
-		printPdfButton = printPdfButton();
-		printPdfButton.setEnabled(false);
-		sentCheckbox = new JCheckBox("versendet");
+            @Override
+            public void actionPerformed(final ActionEvent e)
+            {
+                printPdfButton.setEnabled(((JCheckBox) e.getSource()).isSelected());
+            }
+        });
 
-		typePanel.add(type1Day);
-		typePanel.add(type3Day);
+        printPdfButton = printPdfButton();
+        printPdfButton.setEnabled(false);
+        sentCheckbox = new JCheckBox("versendet");
 
-		add(personNameTextField, personNameTextFieldLayout);
-		final GridBagConstraints layout1 = layout(2);
-		final GridBagConstraints layout2 = layout(3);
-		final GridBagConstraints layout3 = layout(4);
-		final GridBagConstraints layout4 = layout(5);
-		final GridBagConstraints layout5 = layout(6);
-		add(pos, layout(0));
-		add(typePanel, layout1);
-		add(tShirtCheckbox, layout2);
-		add(paidCheckbox, layout3);
-		add(printPdfButton, layout4);
-		add(sentCheckbox, layout5);
-		pos.setText(position.toString());
-	}
+        typePanel.add(type1Day);
+        typePanel.add(type3Day);
 
-	private JButton printPdfButton()
-	{
-		AttendeeEntry self = this;
-		return new JButton(new AbstractAction("PDF generieren")
-		{
-			private static final long serialVersionUID = 1L;
+        add(personNameTextField, personNameTextFieldLayout);
+        final GridBagConstraints layout1 = layout(2);
+        final GridBagConstraints layout2 = layout(3);
+        final GridBagConstraints layout3 = layout(4);
+        final GridBagConstraints layout4 = layout(5);
+        final GridBagConstraints layout5 = layout(6);
+        add(pos, layout(0));
+        add(typePanel, layout1);
+        add(tShirtCheckbox, layout2);
+        add(paidCheckbox, layout3);
+        add(printPdfButton, layout4);
+        add(sentCheckbox, layout5);
+        pos.setText(position.toString());
+    }
 
-			@Override
-			public void actionPerformed(final ActionEvent e)
-			{
-				EventQueue.invokeLater(self::print);
-			}
+    private JButton printPdfButton()
+    {
+        AttendeeEntry self = this;
+        return new JButton(new AbstractAction("PDF generieren")
+        {
+            private static final long serialVersionUID = 1L;
 
-		});
-	}
+            @Override
+            public void actionPerformed(final ActionEvent e)
+            {
+                EventQueue.invokeLater(self::print);
+            }
 
-	void print()
-	{
-		try
-		{
-			String savePath = Config.getInstance().getSavePath();
-			final File backgroundImage = new File(savePath + "logo-big.jpg");
-			FileUtils.copyURLToFile(Main.class.getResource("/logo-big.jpg"), backgroundImage);
+        });
+    }
 
-			Ticket ticket = new Ticket(getPersonName(), getType(), getTShirt());
-			PDFWriter.writePdf(savePath, ticket);
-			Files.delete(backgroundImage.toPath());
-		}
-		catch (IOException e1)
-		{
-			e1.printStackTrace();
-		}
-	}
+    void print()
+    {
+        try
+        {
+            String savePath = Config.getInstance().getSavePath();
+            final File backgroundImage = new File(savePath + "logo-big.jpg");
+            FileUtils.copyURLToFile(Main.class.getResource("/logo-big.jpg"), backgroundImage);
 
-	private static GridBagConstraints layout(final int a)
-	{
-		GridBagConstraints typePanelLayout = new GridBagConstraints();
-		typePanelLayout.anchor = GridBagConstraints.WEST;
-		typePanelLayout.fill = GridBagConstraints.VERTICAL;
-		typePanelLayout.gridx = a;
-		typePanelLayout.gridy = 0;
-		return typePanelLayout;
-	}
+            Ticket ticket = new Ticket(getPersonName(), getType(), getTShirt());
+            PDFWriter.writePdf(savePath, ticket);
+            Files.delete(backgroundImage.toPath());
+        }
+        catch (IOException e1)
+        {
+            e1.printStackTrace();
+        }
+    }
 
-	public String getPersonName()
-	{
-		return personNameTextField.getText();
-	}
+    private static GridBagConstraints layout(final int a)
+    {
+        GridBagConstraints typePanelLayout = new GridBagConstraints();
+        typePanelLayout.anchor = GridBagConstraints.WEST;
+        typePanelLayout.fill = GridBagConstraints.VERTICAL;
+        typePanelLayout.gridx = a;
+        typePanelLayout.gridy = 0;
+        return typePanelLayout;
+    }
 
-	public Integer getType()
-	{
-		if (type1Day.isSelected())
-		{
-			return 1;
-		}
-		else if (type3Day.isSelected())
-		{
-			return 2;
-		}
-		else
-		{
-			return null;
-		}
-	}
+    public String getPersonName()
+    {
+        return personNameTextField.getText();
+    }
 
-	public Boolean isPaid()
-	{
-		return paidCheckbox.isSelected();
-	}
+    public Integer getType()
+    {
+        if (type1Day.isSelected())
+        {
+            return 1;
+        }
+        else if (type3Day.isSelected())
+        {
+            return 2;
+        }
+        else
+        {
+            return null;
+        }
+    }
 
-	public Boolean getTShirt()
-	{
-		return tShirtCheckbox.isSelected();
-	}
+    public Boolean isPaid()
+    {
+        return paidCheckbox.isSelected();
+    }
 
-	@Override
-	public void fillfromCsv(final String line)
-	{
-		Ticket ticket = new Ticket(line);
-		personNameTextField.setText(ticket.getName());
-		if (ticket.getType() == 1)
-		{
-			type1Day.setSelected(true);
-		}
-		else if (ticket.getType() == 2)
-		{
-			type3Day.setSelected(true);
-		}
-		tShirtCheckbox.setSelected(ticket.getTShirt());
-		paidCheckbox.setSelected(ticket.isPaid());
-		printPdfButton.setEnabled(ticket.isPaid());
-		sentCheckbox.setSelected(ticket.isSent());
-	}
+    public Boolean getTShirt()
+    {
+        return tShirtCheckbox.isSelected();
+    }
 
-	@Override
-	public String toCsv()
-	{
-		return new Ticket(
-				getPersonName(),
-				getType(),
-				getTShirt(),
-				paidCheckbox.isSelected(),
-				sentCheckbox.isSelected()).toCsv();
-	}
+    @Override
+    public void fillfromCsv(final String line)
+    {
+        Ticket ticket = new Ticket(line);
+        personNameTextField.setText(ticket.getName());
+        if (ticket.getType() == 1)
+        {
+            type1Day.setSelected(true);
+        }
+        else if (ticket.getType() == 2)
+        {
+            type3Day.setSelected(true);
+        }
+        tShirtCheckbox.setSelected(ticket.getTShirt());
+        paidCheckbox.setSelected(ticket.isPaid());
+        printPdfButton.setEnabled(ticket.isPaid());
+        sentCheckbox.setSelected(ticket.isSent());
+    }
+
+    @Override
+    public String toCsv()
+    {
+        return new Ticket(
+                getPersonName(),
+                getType(),
+                getTShirt(),
+                paidCheckbox.isSelected(),
+                sentCheckbox.isSelected()).toCsv();
+    }
 }

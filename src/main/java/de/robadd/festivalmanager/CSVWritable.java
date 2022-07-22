@@ -3,7 +3,7 @@ package de.robadd.festivalmanager;
 public interface CSVWritable
 {
 
-	public void fillfromCsv(final String line);
+    void fillfromCsv(String line);
 
-	public String toCsv();
+    String toCsv();
 }

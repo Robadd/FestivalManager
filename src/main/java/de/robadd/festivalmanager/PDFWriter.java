@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.text.MessageFormat;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -13,79 +15,82 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import com.google.zxing.WriterException;
 
-public class PDFWriter
+public final class PDFWriter
 {
-	private static final String PNG = ".png";
-	private static final String HTML = ".html";
-	private static final String PDF = ".pdf";
+    private static final Logger LOG = LoggerFactory.getLogger(PDFWriter.class);
+    private static final String PNG = ".png";
+    private static final String HTML = ".html";
+    private static final String PDF = ".pdf";
 
-	private PDFWriter()
-	{
-	}
+    private PDFWriter()
+    {
+    }
 
-	public static File writePdf(final String savePath, final String string)
-	{
-		final String[] split2 = string.split(";");
-		final String name = split2[0];
-		final Integer type = Integer.valueOf(split2[1]);
-		final Ticket ticket = new Ticket(name, type, Boolean.parseBoolean(split2[2]));
+    public static File writePdf(final String savePath, final String string)
+    {
+        final String[] split2 = string.split(";");
+        final String name = split2[0];
+        final Integer type = Integer.valueOf(split2[1]);
+        final Ticket ticket = new Ticket(name, type, Boolean.parseBoolean(split2[2]));
 
-		return writePdf(savePath, ticket);
-	}
+        return writePdf(savePath, ticket);
+    }
 
-	public static File writePdf(final String savePath, final Ticket ticket)
-	{
-		try
-		{
-			final String fileSafeName = ticket.getName().replace(' ', '_');
-			final File qrCode = QRCodeGenerator.generateQrCode(savePath, fileSafeName, ticket);
-			final String html = parseThymeleafTemplate(savePath + fileSafeName, ticket.getType());
+    public static File writePdf(final String savePath, final Ticket ticket)
+    {
+        File file = null;
+        try
+        {
+            final String fileSafeName = ticket.getName().replace(' ', '_');
+            final File qrCode = QRCodeGenerator.generateQrCode(savePath, fileSafeName, ticket);
+            final String html = parseThymeleafTemplate(savePath + fileSafeName, ticket.getType());
 
-			final File htmlFile = new File(savePath + fileSafeName + HTML);
-			try (FileWriter fileWriter = new FileWriter(htmlFile))
-			{
-				fileWriter.write(html);
-				fileWriter.flush();
-			}
+            final File htmlFile = new File(savePath + fileSafeName + HTML);
+            try (FileWriter fileWriter = new FileWriter(htmlFile))
+            {
+                fileWriter.write(html);
+                fileWriter.flush();
+            }
 
-			String htmlPathParameter = savePath + fileSafeName + HTML;
-			String pdfPathParameter = savePath + fileSafeName + PDF;
-			String command = MessageFormat.format(
-				"{0} --headless --print-to-pdf-no-header --print-to-pdf=\"{1}\" \"file:///{2}\"",
-				Config.getInstance().getChromePath(), pdfPathParameter, htmlPathParameter);
-			final Process exec = Runtime.getRuntime().exec(command);
-			exec.waitFor();
-			Files.delete(htmlFile.toPath());
-			Files.delete(qrCode.toPath());
-			return new File(savePath + fileSafeName + PDF);
-		}
-		catch (WriterException | IOException e)
-		{
-			e.printStackTrace();
-		}
-		catch (InterruptedException e)
-		{
-			Thread.currentThread().interrupt();
-			e.printStackTrace();
-		}
-		return null;
-	}
+            final String htmlPathParameter = savePath + fileSafeName + HTML;
+            final String pdfPathParameter = savePath + fileSafeName + PDF;
+            final String command = MessageFormat.format(
+                "{0} --headless --print-to-pdf-no-header --print-to-pdf=\"{1}\" \"file:///{2}\"",
+                Config.getInstance().getChromePath(), pdfPathParameter, htmlPathParameter);
+            final Process exec = Runtime.getRuntime().exec(command);
+            exec.waitFor();
+            Files.delete(htmlFile.toPath());
+            Files.delete(qrCode.toPath());
+            file = new File(savePath + fileSafeName + PDF);
 
-	private static String parseThymeleafTemplate(final String absoluteFilePath, final Integer type)
-	{
-		final ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-		templateResolver.setSuffix(HTML);
-		templateResolver.setTemplateMode(TemplateMode.HTML);
+        }
+        catch (WriterException | IOException e)
+        {
+            LOG.error("Could not write file", e);
+        }
+        catch (final InterruptedException e)
+        {
+            Thread.currentThread().interrupt();
+            LOG.info("PDF writer was interrupted", e);
+        }
+        return file;
+    }
 
-		final TemplateEngine templateEngine = new TemplateEngine();
-		templateEngine.setTemplateResolver(templateResolver);
+    private static String parseThymeleafTemplate(final String absoluteFilePath, final Integer type)
+    {
+        final ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+        templateResolver.setSuffix(HTML);
+        templateResolver.setTemplateMode(TemplateMode.HTML);
 
-		final Context context = new Context();
-		context.setVariable("qr", absoluteFilePath + PNG);
-		context.setVariable("type", type == 1 ? "Tagesticket" : "Festivalpass (3 Tage)");
-		context.setVariable("price", type == 1 ? "15,00" : "30,00");
+        final TemplateEngine templateEngine = new TemplateEngine();
+        templateEngine.setTemplateResolver(templateResolver);
 
-		return templateEngine.process("template", context);
-	}
+        final Context context = new Context();
+        context.setVariable("qr", absoluteFilePath + PNG);
+        context.setVariable("type", type == 1 ? "Tagesticket" : "Festivalpass (3 Tage)");
+        context.setVariable("price", type == 1 ? "15,00" : "30,00");
+
+        return templateEngine.process("template", context);
+    }
 
 }

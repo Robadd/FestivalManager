@@ -1,12 +1,15 @@
 package de.robadd.festivalmanager.updater;
 
-public class Main
+public final class Main
 {
 
-	public static void main(final String[] args)
-	{
-		System.out.println("UPDATER");
+    private Main()
+    {
+    }
 
-	}
+    public static void main(final String[] args)
+    {
+        // Updater wil be here
+    }
 
 }

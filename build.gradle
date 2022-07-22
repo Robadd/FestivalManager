@@ -3,7 +3,7 @@ plugins {
 
 }
 
-version = '0.1.0'
+version = '0.2.0'
 group = 'de.robadd'
 sourceCompatibility = '8'
 
@@ -38,9 +38,9 @@ dependencies {
 	implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
 	implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.36'
 	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.3'
-	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.7.3'
-	testImplementation group: 'junit', name: 'junit', version: '4.13.2'
+	implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.13.3'
 	
+	testImplementation group: 'junit', name: 'junit', version: '4.13.2'
     testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.19.0'
     testImplementation group: 'org.assertj', name: 'assertj-swing-junit', version: '3.17.1'
 }
@@ -55,8 +55,6 @@ task createProperties(dependsOn: processResources) {
   }
 }
 
-
-
 classes {
     dependsOn createProperties
 }
@@ -67,15 +65,13 @@ task buildTableOfContents {
 	${configurations.runtimeClasspath.collect { '"'+it.getName()+'"' }.join(',\n\t')}
 ]}"""
     }
-}	
-
+}
 
 task publish(type: Exec) {
     workingDir "${buildDir}/libs"
     commandLine 'bash', '-c', "pscp -pw 'IY4NNJAYmQD2wR8B' test.txt web127@s193.goserver.host:/home/www/reiserdorfer-haisl.de/festivalmanager/$project.version/text.txt"
 }
   
- 
 jar {
    // from "$buildDir/libs/lib"
     manifest {
@@ -105,30 +101,3 @@ task copyToLib(type: Copy) {
 build.dependsOn(copyToLib)
 build.dependsOn(updaterJar)
 build.dependsOn(buildTableOfContents)
-	
-/*
-jar {
-    manifest {
-        attributes "Main-Class": 'de.robadd.festivalmanager.Main'
-    }
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from {
-    configurations.runtimeClasspath.collect { 
-            exclude '.project'
-            exclude '.classpath'
-            exclude 'about.html'
-            exclude 'LICENSE'
-            exclude 'NOTICE'
-            exclude 'LICENSE.txt'
-            exclude 'NOTICE.txt'
-            exclude 'META-INF/*'
-            exclude 'META-INF/NOTICE'
-            exclude 'META-INF/LICENSE.txt'
-            exclude 'META-INF/NOTICE.txt'
-            exclude 'META-INF/DEPENDENCIES'
-    	it.isDirectory() ? it : zipTree(it) 
-        }
-     }
-  }
-
-*/
