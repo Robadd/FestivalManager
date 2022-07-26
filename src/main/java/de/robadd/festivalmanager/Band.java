@@ -24,6 +24,11 @@ public class Band implements CSVWritable
     private String name;
     private boolean live;
 
+    public Band()
+    {
+        super();
+    }
+
     public Band(final String csv)
     {
         final String[] values = csv.split(";");

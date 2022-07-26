@@ -11,6 +11,11 @@ public class Ticket implements CSVWritable
     private Boolean paid = false;
     private Boolean sent = false;
 
+    public Ticket()
+    {
+        super();
+    }
+
     public Ticket(final String csv)
     {
         final String[] values = csv.split(";");

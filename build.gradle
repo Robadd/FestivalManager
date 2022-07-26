@@ -88,7 +88,7 @@ task updaterJar(type: Jar) {
         'Implementation-Title': 'Updater',
         'Implementation-Version': '0.0.1'
     }
-    baseName 'Updater'
+    archiveBaseName = 'Updater'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
@@ -98,6 +98,7 @@ task copyToLib(type: Copy) {
     from configurations.runtimeClasspath
 }
 
+updaterJar.dependsOn(compileJava)
 build.dependsOn(copyToLib)
 build.dependsOn(updaterJar)
 build.dependsOn(buildTableOfContents)

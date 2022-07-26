@@ -64,6 +64,7 @@ public final class AttendeeEntry extends JPanel implements CSVWritable
     {
         this();
         this.position = position;
+        pos.setText(Integer.toString(this.position));
     }
 
     public AttendeeEntry()

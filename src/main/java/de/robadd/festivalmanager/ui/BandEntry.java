@@ -46,6 +46,7 @@ public final class BandEntry extends JPanel implements CSVWritable
         toHourTextField.setText(Integer.toString(band.getTo().getHour()));
         toMinuteTextField.setText(Integer.toString(band.getTo().getMinute()));
         liveCheckbox.setSelected(band.isLive());
+        dayBox.setSelectedItem(FestivalDay.from(band.getFrom()));
     }
 
     public BandEntry()
