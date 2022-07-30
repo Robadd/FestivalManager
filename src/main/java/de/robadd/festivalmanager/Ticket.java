@@ -1,6 +1,7 @@
 package de.robadd.festivalmanager;
 
 import java.text.MessageFormat;
+import java.util.Objects;
 
 public class Ticket implements CSVWritable
 {
@@ -184,4 +185,32 @@ public class Ticket implements CSVWritable
         sent = Boolean.parseBoolean(values[4]);
         hash = Crypto.generateHash(name, type, tShirt);
     }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(hash, name, paid, sent, tShirt, type);
+    }
+
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if (this == obj)
+        {
+            return true;
+        }
+        if (obj == null)
+        {
+            return false;
+        }
+        if (getClass() != obj.getClass())
+        {
+            return false;
+        }
+        Ticket other = (Ticket) obj;
+        return Objects.equals(hash, other.hash) && Objects.equals(name, other.name) && Objects.equals(paid, other.paid)
+                && Objects.equals(sent, other.sent) && Objects.equals(tShirt, other.tShirt) && Objects.equals(type,
+                    other.type);
+    }
+
 }

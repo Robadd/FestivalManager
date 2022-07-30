@@ -24,19 +24,19 @@ public final class Updater
                 .findFirst();
         if (newestUpdate.isPresent() && newestUpdate.get().compareTo(new Version(currVersion)) > 0)
         {
-            // download(newestUpdate.get());
+            download(newestUpdate.get());
         }
+    }
+
+    private static void download(final Version version)
+    {
+        // TODO Auto-generated method stub
+
     }
 
     public static void updateUpdater()
     {
         // TODO
-    }
-
-    private static void download()
-    {
-        // TODO
-
     }
 
     public static boolean newerUpdate(final String oldVersion, final String newVersion)

@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Objects;
 
 import javax.swing.AbstractAction;
 import javax.swing.ButtonGroup;
@@ -207,6 +208,11 @@ public final class AttendeeEntry extends JPanel implements CSVWritable
         return paidCheckbox.isSelected();
     }
 
+    public Boolean isSent()
+    {
+        return sentCheckbox.isSelected();
+    }
+
     public Boolean getTShirt()
     {
         return tShirtCheckbox.isSelected();
@@ -241,4 +247,35 @@ public final class AttendeeEntry extends JPanel implements CSVWritable
                 paidCheckbox.isSelected(),
                 sentCheckbox.isSelected()).toCsv();
     }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(isPaid(), getPersonName(), pos.getText(), isSent(), getTShirt(), getType());
+    }
+
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if (this == obj)
+        {
+            return true;
+        }
+        if (obj == null)
+        {
+            return false;
+        }
+        if (getClass() != obj.getClass())
+        {
+            return false;
+        }
+        AttendeeEntry other = (AttendeeEntry) obj;
+        return Objects.equals(isPaid(), other.isPaid())
+                && Objects.equals(getPersonName(), other.getPersonName())
+                && Objects.equals(pos.getText(), other.pos.getText())
+                && Objects.equals(isSent(), other.isSent())
+                && Objects.equals(getTShirt(), other.getTShirt())
+                && Objects.equals(getType(), other.getType());
+    }
+
 }

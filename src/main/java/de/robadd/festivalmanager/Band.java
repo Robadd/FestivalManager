@@ -2,6 +2,7 @@ package de.robadd.festivalmanager;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,15 +28,6 @@ public class Band implements CSVWritable
     public Band()
     {
         super();
-    }
-
-    public Band(final String csv)
-    {
-        final String[] values = csv.split(";");
-        name = values[0];
-        from = LocalDateTime.parse(values[1]);
-        to = LocalDateTime.parse(values[2]);
-        live = Boolean.valueOf(values[3]);
     }
 
     public Band(final LocalDateTime from, final LocalDateTime to, final String name, final boolean live)
@@ -143,6 +135,32 @@ public class Band implements CSVWritable
         from = LocalDateTime.parse(values[1]);
         to = LocalDateTime.parse(values[2]);
         live = Boolean.valueOf(values[3]);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(from, live, name, to);
+    }
+
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if (this == obj)
+        {
+            return true;
+        }
+        if (obj == null)
+        {
+            return false;
+        }
+        if (getClass() != obj.getClass())
+        {
+            return false;
+        }
+        Band other = (Band) obj;
+        return Objects.equals(from, other.from) && live == other.live && Objects.equals(name, other.name) && Objects
+                .equals(to, other.to);
     }
 
 }
