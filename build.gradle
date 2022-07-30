@@ -41,7 +41,7 @@ dependencies {
 	implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.13.3'
 	
 	testImplementation group: 'junit', name: 'junit', version: '4.13.2'
-    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.19.0'
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.23.1'
     testImplementation group: 'org.assertj', name: 'assertj-swing-junit', version: '3.17.1'
 }
 
