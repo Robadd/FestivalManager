@@ -41,7 +41,7 @@ dependencies {
 	implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.13.3'
 
 	testImplementation 'org.testng:testng:6.14.3'
-    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.19.0'
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.24.1'
 }
 
 task createProperties(dependsOn: processResources) {
