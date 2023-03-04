@@ -42,7 +42,7 @@ dependencies {
 	implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.1.2'
 
 	testImplementation 'org.testng:testng:6.14.3'
-    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.19.0'
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.24.2'
 }
 
 task createProperties(dependsOn: processResources) {
