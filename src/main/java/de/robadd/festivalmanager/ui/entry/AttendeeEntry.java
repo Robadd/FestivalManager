@@ -1,7 +1,6 @@
 package de.robadd.festivalmanager.ui.entry;
 
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -20,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingWorker;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -28,6 +28,8 @@ import org.slf4j.LoggerFactory;
 import de.robadd.festivalmanager.Main;
 import de.robadd.festivalmanager.model.Ticket;
 import de.robadd.festivalmanager.model.type.CSVWritable;
+import de.robadd.festivalmanager.ui.MainWindow;
+import de.robadd.festivalmanager.ui.StatusBar;
 import de.robadd.festivalmanager.util.Config;
 import de.robadd.festivalmanager.util.PDFWriter;
 
@@ -152,9 +154,22 @@ public final class AttendeeEntry extends JPanel implements CSVWritable
             @Override
             public void actionPerformed(final ActionEvent e)
             {
-                EventQueue.invokeLater(self::print);
+                new SwingWorker<Object, Object>()
+                {
+                    @Override
+                    protected Object doInBackground() throws Exception
+                    {
+                        final StatusBar statusBar = MainWindow.getInstance().getStatusBar();
+                        statusBar.setStatus("PDF generieren");
+                        statusBar.setActiveWithoutValue();
+                        self.print();
+                        Thread.sleep(500);
+                        statusBar.reset();
+                        statusBar.resetStatus();
+                        return null;
+                    }
+                }.execute();
             }
-
         });
     }
 
