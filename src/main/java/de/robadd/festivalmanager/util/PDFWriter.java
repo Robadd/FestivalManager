@@ -1,11 +1,12 @@
 package de.robadd.festivalmanager.util;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.text.MessageFormat;
 
+import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
@@ -28,16 +29,6 @@ public final class PDFWriter
     {
     }
 
-//    public static File writePdf(final String savePath, final String string)
-//    {
-//        final String[] split2 = string.split(";");
-//        final String name = split2[0];
-//        final Integer type = Integer.valueOf(split2[1]);
-//        final Ticket ticket = new Ticket(name, type, Boolean.parseBoolean(split2[2]));
-//
-//        return writePdf(savePath, ticket, year);
-//    }
-
     public static File writePdf(final String savePath, final Ticket ticket, final Integer year)
     {
         File file = null;
@@ -48,7 +39,7 @@ public final class PDFWriter
             final String html = parseThymeleafTemplate(savePath + fileSafeName, ticket.getType(), year);
 
             final File htmlFile = new File(savePath + fileSafeName + HTML);
-            try (FileWriter fileWriter = new FileWriter(htmlFile))
+            try (FileWriterWithEncoding fileWriter = new FileWriterWithEncoding(htmlFile, Charset.defaultCharset()))
             {
                 fileWriter.write(html);
                 fileWriter.flush();

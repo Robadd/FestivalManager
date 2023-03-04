@@ -30,7 +30,7 @@ public final class Updater
 
     private static void download(final Version version)
     {
-
+        // Empty for now
     }
 
     public static boolean newerUpdate(final String oldVersion, final String newVersion)

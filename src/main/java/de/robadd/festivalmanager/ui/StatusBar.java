@@ -48,44 +48,32 @@ public class StatusBar extends JPanel
     public void setStatus(final String status)
     {
         lblNewLabel.setText(status);
-        lblNewLabel.revalidate();
-        lblNewLabel.repaint();
     }
 
     public void resetStatus()
     {
         lblNewLabel.setText("");
-        lblNewLabel.revalidate();
-        lblNewLabel.repaint();
     }
 
     public void setMax(final int max)
     {
         progressBar.setMaximum(max);
-        progressBar.revalidate();
-        progressBar.repaint();
     }
 
     public void increment()
     {
         progressBar.setValue(progressBar.getValue() + 1);
-        progressBar.revalidate();
-        progressBar.repaint();
     }
 
     public void reset()
     {
         progressBar.setValue(0);
         progressBar.setIndeterminate(false);
-        progressBar.revalidate();
-        progressBar.repaint();
     }
 
     public void setActiveWithoutValue()
     {
         progressBar.setIndeterminate(true);
-        revalidate();
-        repaint();
     }
 
 }

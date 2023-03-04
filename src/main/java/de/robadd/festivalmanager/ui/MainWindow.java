@@ -2,6 +2,7 @@ package de.robadd.festivalmanager.ui;
 
 import static javax.swing.JOptionPane.QUESTION_MESSAGE;
 import static javax.swing.JOptionPane.YES_NO_CANCEL_OPTION;
+import static javax.swing.SwingConstants.TOP;
 import static javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE;
 
 import java.awt.Component;
@@ -32,11 +33,16 @@ public class MainWindow
     private static final Logger LOG = LoggerFactory.getLogger(MainWindow.class);
     private static MainWindow instance;
     private final JFrame frame = new JFrame();
-    private final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+    private final JTabbedPane tabbedPane = new JTabbedPane(TOP);
     private AttendeesTab attendeesTab = new AttendeesTab();
     private BandsTab bandsTab = new BandsTab();
     private StatisticsTab settingsTab = new StatisticsTab();
     private StatusBar statusBar;
+
+    public static MainWindow getInstance()
+    {
+        return instance;
+    }
 
     /**
      * Launch the application.
@@ -183,17 +189,7 @@ public class MainWindow
 
     public static AttendeesTab getAttendeesTab()
     {
-        MainWindow instance2 = MainWindow.getInstance();
-        if (instance2 == null)
-        {
-            return new AttendeesTab();
-        }
-        return instance2.attendeesTab;
-    }
-
-    public static MainWindow getInstance()
-    {
-        return instance;
+        return MainWindow.getInstance().attendeesTab;
     }
 
     JFrame getFrame()

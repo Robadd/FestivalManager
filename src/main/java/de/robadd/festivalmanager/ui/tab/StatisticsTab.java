@@ -51,7 +51,7 @@ public final class StatisticsTab extends JPanel implements TabbedOnChangeListene
         tshirt = 0;
         countType1 = 0;
         countType2 = 0;
-        window.getEntries().forEach(entry ->
+        window.getAttendeeEntries().forEach(entry ->
         {
             if (StringUtils.isEmptyOrWhitespace(entry.getPersonName()))
             {

@@ -20,23 +20,19 @@ public final class Main
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
     private static boolean isDirty = false;
 
+    /**
+     * Constructor
+     */
     private Main()
     {
     }
 
-//    public $host = "localhost";
-//    public $dbName = "web127_db1";
-//    public $username = "web127";
-//    public $password = "8VDZuNiZKTBQCkZdlDE3";
-
     public static void main(final String[] args) throws Exception
     {
-
         if (showUpdateWindowIfNecessary())
         {
             MainWindow.main();
         }
-
     }
 
     private static boolean showUpdateWindowIfNecessary() throws IOException, ClassNotFoundException,
@@ -76,8 +72,8 @@ public final class Main
         return isDirty;
     }
 
-    public static void setDirty(boolean isDirty)
+    public static void setDirty(final boolean argIsDirty)
     {
-        Main.isDirty = isDirty;
+        Main.isDirty = argIsDirty;
     }
 }

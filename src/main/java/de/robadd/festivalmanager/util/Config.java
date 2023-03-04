@@ -1,16 +1,17 @@
 package de.robadd.festivalmanager.util;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +69,7 @@ public final class Config
     public void saveIni() throws IOException
     {
         final File file = getConfigFile();
-        try (FileWriter fileWriter = new FileWriter(file, false))
+        try (FileWriterWithEncoding fileWriter = new FileWriterWithEncoding(file, Charset.defaultCharset(), false))
         {
             final String configContent = map.entrySet()
                     .stream()

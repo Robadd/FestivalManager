@@ -31,7 +31,6 @@ import de.robadd.festivalmanager.ui.StatusBar;
 import de.robadd.festivalmanager.ui.button.AddTicketButton;
 import de.robadd.festivalmanager.ui.entry.AttendeeEntry;
 import de.robadd.festivalmanager.util.CSVUtils;
-import de.robadd.festivalmanager.util.Config;
 import de.robadd.festivalmanager.util.DbUtils;
 
 public final class AttendeesTab extends JPanel
@@ -41,14 +40,6 @@ public final class AttendeesTab extends JPanel
     private final Panel entryList = new Panel();
     private final ScrollPane scrollPane = new ScrollPane();
     private final JPanel bottom = new JPanel();
-
-    /**
-     * @return the entries
-     */
-    public List<AttendeeEntry> getEntries()
-    {
-        return getAttendeeEntries();
-    }
 
     public AttendeesTab()
     {
@@ -127,16 +118,19 @@ public final class AttendeesTab extends JPanel
                         final List<AttendeeEntry> attendeeEntries2 = getAttendeeEntries().stream()
                                 .filter(AttendeeEntry::isPaid)
                                 .collect(Collectors.toList());
+                        int entrySize = attendeeEntries2.size();
+                        statusBar.setStatus("PDF generieren (0 / " + entrySize + ")");
 
-                        statusBar.setStatus("PDF generieren");
-                        statusBar.setMax(attendeeEntries2.size());
+                        statusBar.setMax(entrySize);
 
-                        attendeeEntries2.stream().forEach(t ->
+                        for (int i = 0; i < entrySize; i++)
                         {
-                            t.print();
+                            AttendeeEntry entry = attendeeEntries2.get(i);
+                            entry.print();
                             statusBar.increment();
-                            setProgress(1);
-                        });
+                            statusBar.setStatus("PDF generieren (" + i + " / " + entrySize + ")");
+                            setProgress(i / entrySize);
+                        }
                         Thread.sleep(500);
                         statusBar.reset();
                         statusBar.resetStatus();
@@ -153,36 +147,6 @@ public final class AttendeesTab extends JPanel
         {
 
             final List<Ticket> tickets = CrudRepository.of(Ticket.class).getAll();
-            for (final Ticket ticket : tickets)
-            {
-                final AttendeeEntry entry1 = new AttendeeEntry(ticket, getAttendeeEntries().size() + 1);
-                entry1.setAlignmentY(Component.TOP_ALIGNMENT);
-                entry1.setAlignmentX(Component.LEFT_ALIGNMENT);
-                entryList.add(entry1);
-            }
-
-            entryList.getParent().revalidate();
-            entryList.getParent().repaint();
-        });
-    }
-
-    public final void loadEntriesFromCsv()
-    {
-        EventQueue.invokeLater(() ->
-        {
-            final File csvFile = new File(Config.getInstance().getAttendeesCsvFile());
-            if (!csvFile.exists())
-            {
-                try
-                {
-                    Files.createFile(csvFile.toPath());
-                }
-                catch (final IOException e)
-                {
-                    LOG.error("could not create csv file", e);
-                }
-            }
-            final List<Ticket> tickets = CSVUtils.readFromCsv(csvFile, Ticket.class);
             for (final Ticket ticket : tickets)
             {
                 final AttendeeEntry entry1 = new AttendeeEntry(ticket, getAttendeeEntries().size() + 1);
