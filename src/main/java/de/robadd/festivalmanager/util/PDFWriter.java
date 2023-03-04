@@ -1,4 +1,4 @@
-package de.robadd.festivalmanager;
+package de.robadd.festivalmanager.util;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -15,6 +15,8 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import com.google.zxing.WriterException;
 
+import de.robadd.festivalmanager.model.Ticket;
+
 public final class PDFWriter
 {
     private static final Logger LOG = LoggerFactory.getLogger(PDFWriter.class);
@@ -26,24 +28,24 @@ public final class PDFWriter
     {
     }
 
-    public static File writePdf(final String savePath, final String string)
-    {
-        final String[] split2 = string.split(";");
-        final String name = split2[0];
-        final Integer type = Integer.valueOf(split2[1]);
-        final Ticket ticket = new Ticket(name, type, Boolean.parseBoolean(split2[2]));
+//    public static File writePdf(final String savePath, final String string)
+//    {
+//        final String[] split2 = string.split(";");
+//        final String name = split2[0];
+//        final Integer type = Integer.valueOf(split2[1]);
+//        final Ticket ticket = new Ticket(name, type, Boolean.parseBoolean(split2[2]));
+//
+//        return writePdf(savePath, ticket, year);
+//    }
 
-        return writePdf(savePath, ticket);
-    }
-
-    public static File writePdf(final String savePath, final Ticket ticket)
+    public static File writePdf(final String savePath, final Ticket ticket, final Integer year)
     {
         File file = null;
         try
         {
             final String fileSafeName = ticket.getName().replace(' ', '_');
             final File qrCode = QRCodeGenerator.generateQrCode(savePath, fileSafeName, ticket);
-            final String html = parseThymeleafTemplate(savePath + fileSafeName, ticket.getType());
+            final String html = parseThymeleafTemplate(savePath + fileSafeName, ticket.getType(), year);
 
             final File htmlFile = new File(savePath + fileSafeName + HTML);
             try (FileWriter fileWriter = new FileWriter(htmlFile))
@@ -76,7 +78,7 @@ public final class PDFWriter
         return file;
     }
 
-    private static String parseThymeleafTemplate(final String absoluteFilePath, final Integer type)
+    private static String parseThymeleafTemplate(final String absoluteFilePath, final Integer type, final Integer year)
     {
         final ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
         templateResolver.setSuffix(HTML);
@@ -86,6 +88,7 @@ public final class PDFWriter
         templateEngine.setTemplateResolver(templateResolver);
 
         final Context context = new Context();
+        context.setVariable("year", year);
         context.setVariable("qr", absoluteFilePath + PNG);
         context.setVariable("type", type == 1 ? "Tagesticket" : "Festivalpass (3 Tage)");
         context.setVariable("price", type == 1 ? "15,00" : "30,00");

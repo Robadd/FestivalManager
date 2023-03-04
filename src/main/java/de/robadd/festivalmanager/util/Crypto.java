@@ -1,4 +1,4 @@
-package de.robadd.festivalmanager;
+package de.robadd.festivalmanager.util;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;

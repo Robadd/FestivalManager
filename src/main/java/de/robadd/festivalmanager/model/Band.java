@@ -1,4 +1,4 @@
-package de.robadd.festivalmanager;
+package de.robadd.festivalmanager.model;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
@@ -12,18 +12,33 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import de.robadd.festivalmanager.model.annotation.DbField;
+import de.robadd.festivalmanager.model.annotation.DbTable;
+import de.robadd.festivalmanager.model.annotation.Id;
+import de.robadd.festivalmanager.model.type.CSVWritable;
+import de.robadd.festivalmanager.model.type.Identifiable;
+import de.robadd.festivalmanager.model.type.JSONWritable;
+
 /**
  * Band
  *
  * @author Robert Kraus
  */
-public class Band implements CSVWritable
+@DbTable("band")
+public class Band implements CSVWritable, JSONWritable, Identifiable
 {
     private static final Logger LOG = LoggerFactory.getLogger(Band.class);
+    @Id
+    @DbField("id")
+    private int id;
+    @DbField("from")
     private LocalDateTime from;
+    @DbField("to")
     private LocalDateTime to;
+    @DbField("name")
     private String name;
-    private boolean live;
+    @DbField("live")
+    private Boolean live;
 
     public Band()
     {
@@ -90,7 +105,7 @@ public class Band implements CSVWritable
     /**
      * @return the live
      */
-    public boolean isLive()
+    public Boolean getLive()
     {
         return live;
     }
@@ -98,7 +113,7 @@ public class Band implements CSVWritable
     /**
      * @param live the live to set
      */
-    public void setLive(final boolean live)
+    public void setLive(final Boolean live)
     {
         this.live = live;
     }
@@ -109,6 +124,28 @@ public class Band implements CSVWritable
         return MessageFormat.format("{0};{1};{2};{3}", name, from, to, live);
     }
 
+    @Override
+    public void fillFromJson(final String json)
+    {
+        try
+        {
+            final ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.findAndRegisterModules();
+            objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+            objectMapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
+            final Band val = objectMapper.readValue(json, Band.class);
+            this.from = val.from;
+            this.to = val.to;
+            this.name = val.name;
+            this.live = val.live;
+        }
+        catch (JsonProcessingException e)
+        {
+            LOG.error("Could not serialize from JSON", e);
+        }
+    }
+
+    @Override
     public String toJson()
     {
         String retVal = "";
@@ -163,4 +200,21 @@ public class Band implements CSVWritable
                 .equals(to, other.to);
     }
 
+    @Override
+    public Integer getId()
+    {
+        return id;
+    }
+
+    @Override
+    public void setId(final Integer argId)
+    {
+        id = argId;
+    }
+
+    @Override
+    public String toString()
+    {
+        return toJson();
+    }
 }

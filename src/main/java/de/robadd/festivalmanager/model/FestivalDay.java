@@ -1,4 +1,4 @@
-package de.robadd.festivalmanager;
+package de.robadd.festivalmanager.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -6,7 +6,9 @@ import java.time.temporal.ChronoField;
 
 public enum FestivalDay
 {
-    THURSDAY_2022("Donnerstag", 2022, 8, 4), FRIDAY_2022("Freitag", 2022, 8, 5), SATURDAY_2022("Samstag", 2022, 8, 6);
+    THURSDAY_2022("Donnerstag", 2022, 8, 4), FRIDAY_2022("Freitag", 2022, 8, 5), SATURDAY_2022("Samstag", 2022, 8, 6),
+    THURSDAY_2023("Donnerstag", 2023, 7, 27), FRIDAY_2023("Freitag", 2023, 7, 28), SATURDAY_2023("Samstag", 2023, 7,
+            29);
 
     private String name;
     private Integer year;

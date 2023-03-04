@@ -20,7 +20,7 @@
             .header {
                 margin: auto auto auto auto;
                 width: fit-content;
-                font-size: 91px;
+                font-size: 80px;
                 font-family: Marcelle Script;
             }
             .image {
@@ -57,7 +57,7 @@
 <body>
     <div class="container">
         <img src="logo-big.jpg" alt="logo" />
-        <div class="header">RDH-Festival</div>
+        <div class="header">RDH-Festival <span th:text="${year}"></span></div>
         <div class="image">
             <img th:src="@{${qr}}" alt="qrCode"/>
         </div>

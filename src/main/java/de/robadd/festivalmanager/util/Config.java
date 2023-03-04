@@ -1,4 +1,4 @@
-package de.robadd.festivalmanager;
+package de.robadd.festivalmanager.util;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.robadd.festivalmanager.Main;
 
 public final class Config
 {
@@ -39,7 +41,7 @@ public final class Config
             {
                 final String path = Main.class.getProtectionDomain().getCodeSource().getLocation().getPath();
                 setAttendeesCsvFile(new File(new File(URLDecoder.decode(path, UTF_8)).getParentFile().getPath(),
-                        "2022.csv")
+                        "2023.csv")
                                 .getPath());
                 setSavePath(new File(URLDecoder.decode(path, UTF_8)).getParentFile().getPath() + "\\");
                 saveIni();

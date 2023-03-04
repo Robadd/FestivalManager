@@ -1,4 +1,4 @@
-package de.robadd.festivalmanager.ui;
+package de.robadd.festivalmanager.ui.tab;
 
 import java.awt.Component;
 import java.awt.EventQueue;
@@ -27,15 +27,17 @@ import javax.swing.SwingConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.robadd.festivalmanager.Band;
-import de.robadd.festivalmanager.CSVUtils;
-import de.robadd.festivalmanager.Config;
+import de.robadd.festivalmanager.db.CrudRepository;
+import de.robadd.festivalmanager.model.Band;
+import de.robadd.festivalmanager.ui.entry.BandEntry;
+import de.robadd.festivalmanager.util.CSVUtils;
+import de.robadd.festivalmanager.util.Config;
 
 public final class BandsTab extends JPanel
 {
     private static final long serialVersionUID = 4786178765587213932L;
     private static final Logger LOG = LoggerFactory.getLogger(BandsTab.class);
-    private List<BandEntry> attendeeEntries = new ArrayList<>();
+    private List<BandEntry> bandEntries = new ArrayList<>();
     private Panel entryList = new Panel();
     private ScrollPane scrollPane = new ScrollPane();
     private JPanel bottom = new JPanel();
@@ -48,7 +50,8 @@ public final class BandsTab extends JPanel
         add(scrollPane, scrollPaneLayout());
         add(bottom, bottomLayout());
         initBottomPanel();
-        loadEntriesFromCsv();
+        // loadEntriesFromCsv();
+        loadFromDb();
     }
 
     /**
@@ -56,7 +59,7 @@ public final class BandsTab extends JPanel
      */
     public List<BandEntry> getEntries()
     {
-        return attendeeEntries;
+        return bandEntries;
     }
 
     private void initBottomPanel()
@@ -124,16 +127,40 @@ public final class BandsTab extends JPanel
         setLayout(gridBagLayout);
     }
 
-    void loadEntriesFromCsv()
+    public final void loadFromDb()
+    {
+
+        EventQueue.invokeLater(() ->
+        {
+            List<Band> bands = CrudRepository.of(Band.class).getAll().stream().collect(Collectors.toList());
+            for (Band band : bands)
+            {
+                BandEntry bandEntry = new BandEntry(band, bandEntries.size() + 1);
+                bandEntry.setAlignmentY(Component.TOP_ALIGNMENT);
+                bandEntry.setAlignmentX(Component.LEFT_ALIGNMENT);
+                entryList.add(bandEntry);
+                bandEntries.add(bandEntry);
+            }
+            entryList.getParent().revalidate();
+            entryList.getParent().repaint();
+        });
+    }
+
+    public final void loadEntriesFromCsv()
+    {
+        String bandsCsvFile = Config.getInstance().getBandsCsvFile();
+        if (bandsCsvFile == null)
+        {
+            return;
+        }
+        File csvFile = new File(bandsCsvFile);
+        loadEntriesFromCsv(csvFile);
+    }
+
+    public final void loadEntriesFromCsv(final File csvFile)
     {
         EventQueue.invokeLater(() ->
         {
-            String bandsCsvFile = Config.getInstance().getBandsCsvFile();
-            if (bandsCsvFile == null)
-            {
-                return;
-            }
-            File csvFile = new File(bandsCsvFile);
             if (!csvFile.exists())
             {
                 try
@@ -148,11 +175,11 @@ public final class BandsTab extends JPanel
             List<Band> tickets = CSVUtils.readFromCsv(csvFile, Band.class);
             for (Band ticket : tickets)
             {
-                BandEntry entry1 = new BandEntry(ticket, attendeeEntries.size() + 1);
+                BandEntry entry1 = new BandEntry(ticket, bandEntries.size() + 1);
                 entry1.setAlignmentY(Component.TOP_ALIGNMENT);
                 entry1.setAlignmentX(Component.LEFT_ALIGNMENT);
                 entryList.add(entry1);
-                attendeeEntries.add(entry1);
+                bandEntries.add(entry1);
             }
 
             entryList.getParent().revalidate();
@@ -171,10 +198,10 @@ public final class BandsTab extends JPanel
             {
                 EventQueue.invokeLater(() ->
                 {
-                    BandEntry entry1 = new BandEntry(attendeeEntries.size() + 1);
+                    BandEntry entry1 = new BandEntry(bandEntries.size() + 1);
                     entry1.setAlignmentY(Component.TOP_ALIGNMENT);
                     entry1.setAlignmentX(Component.LEFT_ALIGNMENT);
-                    attendeeEntries.add(entry1);
+                    bandEntries.add(entry1);
                     entryList.add(entry1);
                     entryList.getParent().revalidate();
                     entryList.getParent().repaint();

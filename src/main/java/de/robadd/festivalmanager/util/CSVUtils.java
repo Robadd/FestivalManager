@@ -1,4 +1,4 @@
-package de.robadd.festivalmanager;
+package de.robadd.festivalmanager.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.robadd.festivalmanager.model.type.CSVWritable;
+
 public final class CSVUtils
 {
     private static final Logger LOG = LoggerFactory.getLogger(CSVUtils.class);
@@ -18,6 +20,12 @@ public final class CSVUtils
     {
     }
 
+    /**
+     * @param <T>     the class
+     * @param csvFile the csv file
+     * @param clazz   the clazz
+     * @return list of csvwritables
+     */
     public static <T extends CSVWritable> List<T> readFromCsv(final File csvFile, final Class<T> clazz)
     {
         final List<T> retVal = new ArrayList<>();
@@ -48,6 +56,14 @@ public final class CSVUtils
         return retVal;
     }
 
+    /**
+     *
+     * @param <T>     the class
+     * @param tickets csvwritables to write
+     * @param file    the file to write to
+     * @deprecated since 0.3.1
+     */
+    @Deprecated
     public static <T extends CSVWritable> void writeToCsv(final List<T> tickets, final File file)
     {
         try

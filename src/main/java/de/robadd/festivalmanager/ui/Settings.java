@@ -19,7 +19,8 @@ import javax.swing.JPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.robadd.festivalmanager.Config;
+import de.robadd.festivalmanager.ui.entry.SettingsEntry;
+import de.robadd.festivalmanager.util.Config;
 
 public class Settings extends JFrame
 {
@@ -63,7 +64,7 @@ public class Settings extends JFrame
                     }
                     catch (IOException e1)
                     {
-                        LOG.error("Could not save config", e);
+                        LOG.error("Could not save config", e1);
                     }
                 });
 

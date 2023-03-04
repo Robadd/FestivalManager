@@ -1,4 +1,4 @@
-package de.robadd.festivalmanager.ui;
+package de.robadd.festivalmanager.ui.entry;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;

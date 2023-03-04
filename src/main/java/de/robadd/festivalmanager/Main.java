@@ -18,22 +18,32 @@ import de.robadd.festivalmanager.updater.Updater;
 public final class Main
 {
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
+    private static boolean isDirty = false;
 
     private Main()
     {
     }
 
-    public static void main(final String[] args) throws ClassNotFoundException, InstantiationException,
-            IllegalAccessException, IOException, UnsupportedLookAndFeelException
+//    public $host = "localhost";
+//    public $dbName = "web127_db1";
+//    public $username = "web127";
+//    public $password = "8VDZuNiZKTBQCkZdlDE3";
+
+    public static void main(final String[] args) throws Exception
     {
-        MainWindow.main();
-        showUpdateWindowIfNecessary();
+
+        if (showUpdateWindowIfNecessary())
+        {
+            MainWindow.main();
+        }
+
     }
 
-    private static void showUpdateWindowIfNecessary() throws IOException, ClassNotFoundException,
+    private static boolean showUpdateWindowIfNecessary() throws IOException, ClassNotFoundException,
             InstantiationException,
             IllegalAccessException, UnsupportedLookAndFeelException
     {
+        boolean shouldShowMainWindow = true;
         try (InputStream inputStream = Main.class.getResourceAsStream("/version.properties"))
         {
             if (inputStream != null)
@@ -52,10 +62,22 @@ public final class Main
                         {
                             LOG.info("version found");
                             UpdaterWindow.main(version);
+                            shouldShowMainWindow = false;
                         }
                     }
                 }
             }
         }
+        return shouldShowMainWindow;
+    }
+
+    public static boolean isDirty()
+    {
+        return isDirty;
+    }
+
+    public static void setDirty(boolean isDirty)
+    {
+        Main.isDirty = isDirty;
     }
 }

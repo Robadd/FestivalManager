@@ -1,4 +1,4 @@
-package de.robadd.festivalmanager.ui;
+package de.robadd.festivalmanager.ui.entry;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -13,9 +13,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import de.robadd.festivalmanager.Band;
-import de.robadd.festivalmanager.CSVWritable;
-import de.robadd.festivalmanager.FestivalDay;
+import de.robadd.festivalmanager.model.Band;
+import de.robadd.festivalmanager.model.FestivalDay;
+import de.robadd.festivalmanager.model.type.CSVWritable;
 
 public final class BandEntry extends JPanel implements CSVWritable
 {
@@ -45,7 +45,7 @@ public final class BandEntry extends JPanel implements CSVWritable
         fromMinuteTextField.setText(Integer.toString(band.getFrom().getMinute()));
         toHourTextField.setText(Integer.toString(band.getTo().getHour()));
         toMinuteTextField.setText(Integer.toString(band.getTo().getMinute()));
-        liveCheckbox.setSelected(band.isLive());
+        liveCheckbox.setSelected(band.getLive());
         dayBox.setSelectedItem(FestivalDay.from(band.getFrom()));
     }
 

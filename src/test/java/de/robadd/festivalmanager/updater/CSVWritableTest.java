@@ -6,10 +6,10 @@ import org.assertj.core.api.Assertions;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import de.robadd.festivalmanager.Band;
-import de.robadd.festivalmanager.CSVWritable;
-import de.robadd.festivalmanager.Ticket;
-import de.robadd.festivalmanager.ui.AttendeeEntry;
+import de.robadd.festivalmanager.model.Band;
+import de.robadd.festivalmanager.model.Ticket;
+import de.robadd.festivalmanager.model.type.CSVWritable;
+import de.robadd.festivalmanager.ui.entry.AttendeeEntry;
 
 public class CSVWritableTest
 {

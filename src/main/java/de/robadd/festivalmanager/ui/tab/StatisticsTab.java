@@ -1,9 +1,12 @@
-package de.robadd.festivalmanager.ui;
+package de.robadd.festivalmanager.ui.tab;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import org.thymeleaf.util.StringUtils;
+
+import de.robadd.festivalmanager.ui.TabbedOnChangeListener;
+import de.robadd.festivalmanager.ui.entry.StatisticsEntry;
 
 public final class StatisticsTab extends JPanel implements TabbedOnChangeListener
 {

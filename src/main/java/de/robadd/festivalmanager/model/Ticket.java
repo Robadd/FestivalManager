@@ -1,16 +1,33 @@
-package de.robadd.festivalmanager;
+package de.robadd.festivalmanager.model;
 
 import java.text.MessageFormat;
 import java.util.Objects;
 
-public class Ticket implements CSVWritable
+import de.robadd.festivalmanager.model.annotation.DbField;
+import de.robadd.festivalmanager.model.annotation.DbTable;
+import de.robadd.festivalmanager.model.annotation.Id;
+import de.robadd.festivalmanager.model.annotation.LoadFinalizing;
+import de.robadd.festivalmanager.model.type.CSVWritable;
+import de.robadd.festivalmanager.model.type.Identifiable;
+import de.robadd.festivalmanager.util.Crypto;
+
+@DbTable("ticket")
+public class Ticket implements CSVWritable, Identifiable, LoadFinalizing
 {
+    @Id
+    @DbField("id")
+    private Integer id;
+    @DbField("name")
     private String name;
+    @DbField("type")
     private Integer type;
-    private Boolean tShirt;
-    private String hash;
+    @DbField("tshirt")
+    private Boolean tShirt = false;
+    @DbField("paid")
     private Boolean paid = false;
+    @DbField("sent")
     private Boolean sent = false;
+    private String hash;
 
     public Ticket()
     {
@@ -25,7 +42,7 @@ public class Ticket implements CSVWritable
         tShirt = Boolean.parseBoolean(values[2]);
         paid = Boolean.parseBoolean(values[3]);
         sent = Boolean.parseBoolean(values[4]);
-        hash = Crypto.generateHash(name, type, tShirt);
+        addHash();
     }
 
     public Ticket(final String name, final Integer type, final Boolean tShirt)
@@ -34,6 +51,11 @@ public class Ticket implements CSVWritable
         this.name = name;
         this.type = type;
         this.tShirt = tShirt;
+        addHash();
+    }
+
+    public void addHash()
+    {
         this.hash = Crypto.generateHash(name, type, tShirt);
     }
 
@@ -112,7 +134,7 @@ public class Ticket implements CSVWritable
     /**
      * @return the paid
      */
-    public boolean isPaid()
+    public boolean getPaid()
     {
         return paid;
     }
@@ -128,7 +150,7 @@ public class Ticket implements CSVWritable
     /**
      * @return the sent
      */
-    public boolean isSent()
+    public boolean getSent()
     {
         return sent;
     }
@@ -154,6 +176,8 @@ public class Ticket implements CSVWritable
                 + "\"name\":\"" + name + "\","
                 + "\"type\":\"" + type + "\","
                 + "\"tshirt\":\"" + tShirt + "\","
+                + "\"paid\":\"" + paid + "\","
+                + "\"sent\":\"" + sent + "\","
                 + "\"hash\":\"" + hash + "\""
                 + "}";
     }
@@ -183,7 +207,7 @@ public class Ticket implements CSVWritable
         tShirt = Boolean.parseBoolean(values[2]);
         paid = Boolean.parseBoolean(values[3]);
         sent = Boolean.parseBoolean(values[4]);
-        hash = Crypto.generateHash(name, type, tShirt);
+        addHash();
     }
 
     @Override
@@ -213,4 +237,27 @@ public class Ticket implements CSVWritable
                     other.type);
     }
 
+    /**
+     * @return the id
+     */
+    @Override
+    public Integer getId()
+    {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    @Override
+    public void setId(final Integer id)
+    {
+        this.id = id;
+    }
+
+    @Override
+    public void afterLoading()
+    {
+        addHash();
+    }
 }

@@ -1,4 +1,4 @@
-package de.robadd.festivalmanager.ui;
+package de.robadd.festivalmanager.ui.entry;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -22,16 +22,19 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import de.robadd.festivalmanager.CSVWritable;
-import de.robadd.festivalmanager.Config;
 import de.robadd.festivalmanager.Main;
-import de.robadd.festivalmanager.PDFWriter;
-import de.robadd.festivalmanager.Ticket;
+import de.robadd.festivalmanager.model.Ticket;
+import de.robadd.festivalmanager.model.type.CSVWritable;
+import de.robadd.festivalmanager.util.Config;
+import de.robadd.festivalmanager.util.PDFWriter;
 
 public final class AttendeeEntry extends JPanel implements CSVWritable
 {
     private static final long serialVersionUID = -6083595259931310400L;
+    private static final Logger LOG = LoggerFactory.getLogger(AttendeeEntry.class);
     private Integer position = 0;
     private JTextField personNameTextField;
     private JRadioButton type1Day;
@@ -41,6 +44,7 @@ public final class AttendeeEntry extends JPanel implements CSVWritable
     private JButton printPdfButton;
     private JCheckBox sentCheckbox;
     private JLabel pos = new JLabel();
+    private ButtonGroup type;
 
     public AttendeeEntry(final Ticket ticket, final int pos)
     {
@@ -56,9 +60,9 @@ public final class AttendeeEntry extends JPanel implements CSVWritable
             type3Day.setSelected(true);
         }
         tShirtCheckbox.setSelected(ticket.getTShirt());
-        paidCheckbox.setSelected(ticket.isPaid());
-        printPdfButton.setEnabled(ticket.isPaid());
-        sentCheckbox.setSelected(ticket.isSent());
+        paidCheckbox.setSelected(ticket.getPaid());
+        printPdfButton.setEnabled(ticket.getPaid());
+        sentCheckbox.setSelected(ticket.getSent());
     }
 
     public AttendeeEntry(final Integer position)
@@ -73,11 +77,11 @@ public final class AttendeeEntry extends JPanel implements CSVWritable
         setPreferredSize(new Dimension(900, 20));
         setMaximumSize(new Dimension(900, 20));
 
-        ButtonGroup type = new ButtonGroup();
+        type = new ButtonGroup();
         GridBagLayout gridBagLayout = new GridBagLayout();
-        gridBagLayout.columnWidths = new int[] {20, 131, 131, 131, 131, 131, 131};
+        gridBagLayout.columnWidths = new int[] {20, 131, 131, 131, 131, 131, 131, 20};
         gridBagLayout.rowHeights = new int[] {20, 0};
-        gridBagLayout.columnWeights = new double[] {1.0, 1.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
+        gridBagLayout.columnWeights = new double[] {1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
         gridBagLayout.rowWeights = new double[] {0.0, Double.MIN_VALUE};
         setLayout(gridBagLayout);
 
@@ -154,7 +158,7 @@ public final class AttendeeEntry extends JPanel implements CSVWritable
         });
     }
 
-    void print()
+    public void print()
     {
         try
         {
@@ -163,12 +167,12 @@ public final class AttendeeEntry extends JPanel implements CSVWritable
             FileUtils.copyURLToFile(Main.class.getResource("/logo-big.jpg"), backgroundImage);
 
             Ticket ticket = new Ticket(getPersonName(), getType(), getTShirt());
-            PDFWriter.writePdf(savePath, ticket);
+            PDFWriter.writePdf(savePath, ticket, 2023);
             Files.delete(backgroundImage.toPath());
         }
         catch (IOException e1)
         {
-            e1.printStackTrace();
+            LOG.error("", e1);
         }
     }
 
@@ -201,6 +205,7 @@ public final class AttendeeEntry extends JPanel implements CSVWritable
         {
             return null;
         }
+
     }
 
     public Boolean isPaid()
@@ -232,9 +237,9 @@ public final class AttendeeEntry extends JPanel implements CSVWritable
             type3Day.setSelected(true);
         }
         tShirtCheckbox.setSelected(ticket.getTShirt());
-        paidCheckbox.setSelected(ticket.isPaid());
-        printPdfButton.setEnabled(ticket.isPaid());
-        sentCheckbox.setSelected(ticket.isSent());
+        paidCheckbox.setSelected(ticket.getPaid());
+        printPdfButton.setEnabled(ticket.getPaid());
+        sentCheckbox.setSelected(ticket.getSent());
     }
 
     @Override

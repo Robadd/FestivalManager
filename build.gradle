@@ -3,7 +3,7 @@ plugins {
 
 }
 
-version = '0.2.0'
+version = '0.3.2'
 group = 'de.robadd'
 sourceCompatibility = '8'
 
@@ -39,6 +39,7 @@ dependencies {
 	implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.36'
 	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.3'
 	implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.13.3'
+	implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.1.2'
 
 	testImplementation 'org.testng:testng:6.14.3'
     testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.19.0'
@@ -68,7 +69,7 @@ task buildTableOfContents {
 
 task publish(type: Exec) {
     workingDir "${buildDir}/libs"
-    commandLine 'bash', '-c', "pscp -pw 'IY4NNJAYmQD2wR8B' test.txt web127@s193.goserver.host:/home/www/reiserdorfer-haisl.de/festivalmanager/$project.version/text.txt"
+    commandLine 'bash', '-c', "pscp -pw 'IY4NNJAYmQD2wR8B' dependencies.txt web127@s193.goserver.host:/home/www/reiserdorfer-haisl.de/festivalmanager/$project.version/text.txt"
 }
   
 jar {

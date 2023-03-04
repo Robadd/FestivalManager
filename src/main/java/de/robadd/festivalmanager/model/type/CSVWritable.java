@@ -1,4 +1,4 @@
-package de.robadd.festivalmanager;
+package de.robadd.festivalmanager.model.type;
 
 public interface CSVWritable
 {

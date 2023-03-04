@@ -30,13 +30,7 @@ public final class Updater
 
     private static void download(final Version version)
     {
-        // TODO Auto-generated method stub
 
-    }
-
-    public static void updateUpdater()
-    {
-        // TODO
     }
 
     public static boolean newerUpdate(final String oldVersion, final String newVersion)

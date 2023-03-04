@@ -27,6 +27,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.robadd.festivalmanager.ui.entry.AttendeeEntry;
 import de.robadd.festivalmanager.updater.Updater;
 
 public final class UpdaterWindow
