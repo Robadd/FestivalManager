@@ -33,7 +33,7 @@ sourceSets {
 dependencies {
 	implementation group: 'com.google.zxing', name: 'core', version: '3.5.0'
 	implementation group: 'com.google.zxing', name: 'javase', version: '3.5.0'
-	implementation group: 'org.thymeleaf', name: 'thymeleaf', version: '3.1.0.M2'
+	implementation group: 'org.thymeleaf', name: 'thymeleaf', version: '3.1.1.RELEASE'
 	implementation group: 'org.xhtmlrenderer', name: 'flying-saucer-pdf', version: '9.1.22'
 	implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
 	implementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.6'
