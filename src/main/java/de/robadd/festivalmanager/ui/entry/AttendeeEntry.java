@@ -1,6 +1,8 @@
 package de.robadd.festivalmanager.ui.entry;
 
+import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -41,6 +43,7 @@ public final class AttendeeEntry extends JPanel implements CSVWritable
     private JTextField personNameTextField;
     private JRadioButton type1Day;
     private JRadioButton type3Day;
+    private JRadioButton typeVisitor;
     private JCheckBox tShirtCheckbox;
     private JCheckBox paidCheckbox;
     private JButton printPdfButton;
@@ -60,6 +63,10 @@ public final class AttendeeEntry extends JPanel implements CSVWritable
         else if (ticket.getType() == 2)
         {
             type3Day.setSelected(true);
+        }
+        else if (ticket.getType() == 3)
+        {
+            typeVisitor.setSelected(true);
         }
         tShirtCheckbox.setSelected(ticket.getTShirt());
         paidCheckbox.setSelected(ticket.getPaid());
@@ -100,8 +107,10 @@ public final class AttendeeEntry extends JPanel implements CSVWritable
 
         type1Day = new JRadioButton("1 Tag");
         type3Day = new JRadioButton("3 Tage");
+        typeVisitor = new JRadioButton("Zuschauer");
         type.add(type1Day);
         type.add(type3Day);
+        type.add(typeVisitor);
 
         JPanel typePanel = new JPanel();
         FlowLayout flowLayout = (FlowLayout) typePanel.getLayout();
@@ -126,8 +135,32 @@ public final class AttendeeEntry extends JPanel implements CSVWritable
         printPdfButton.setEnabled(false);
         sentCheckbox = new JCheckBox("versendet");
 
+        AttendeeEntry self = this;
+        JButton deleteButton = new JButton(new AbstractAction("-")
+        {
+            private static final long serialVersionUID = -33018932692616185L;
+
+            @Override
+            public void actionPerformed(final ActionEvent e)
+            {
+                EventQueue.invokeLater(() ->
+                {
+                    Container parent = self.getParent();
+                    parent.remove(self);
+//                    Stream.of(parent.getComponents())
+//                    .filter(a -> a instanceof AttendeeEntry)
+//                    .map(AttendeeEntry.class::cast)
+//                    .sorted((a,b)->a.getpos);
+                    parent.revalidate();
+                    // parent.repaint();
+                });
+
+            }
+        });
+
         typePanel.add(type1Day);
         typePanel.add(type3Day);
+        typePanel.add(typeVisitor);
 
         add(personNameTextField, personNameTextFieldLayout);
         final GridBagConstraints layout1 = layout(2);
@@ -135,12 +168,15 @@ public final class AttendeeEntry extends JPanel implements CSVWritable
         final GridBagConstraints layout3 = layout(4);
         final GridBagConstraints layout4 = layout(5);
         final GridBagConstraints layout5 = layout(6);
+        final GridBagConstraints layout6 = layout(7);
         add(pos, layout(0));
         add(typePanel, layout1);
         add(tShirtCheckbox, layout2);
         add(paidCheckbox, layout3);
         add(printPdfButton, layout4);
         add(sentCheckbox, layout5);
+
+        add(deleteButton, layout6);
         pos.setText(position.toString());
     }
 
@@ -216,6 +252,10 @@ public final class AttendeeEntry extends JPanel implements CSVWritable
         {
             return 2;
         }
+        else if (typeVisitor.isSelected())
+        {
+            return 3;
+        }
         else
         {
             return null;
@@ -250,6 +290,10 @@ public final class AttendeeEntry extends JPanel implements CSVWritable
         else if (ticket.getType() == 2)
         {
             type3Day.setSelected(true);
+        }
+        else if (ticket.getType() == 3)
+        {
+            typeVisitor.setSelected(true);
         }
         tShirtCheckbox.setSelected(ticket.getTShirt());
         paidCheckbox.setSelected(ticket.getPaid());

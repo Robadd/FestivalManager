@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.text.DecimalFormat;
 import java.text.MessageFormat;
 
 import org.apache.commons.io.output.FileWriterWithEncoding;
@@ -17,6 +18,7 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import com.google.zxing.WriterException;
 
 import de.robadd.festivalmanager.model.Ticket;
+import de.robadd.festivalmanager.model.TicketType;
 
 public final class PDFWriter
 {
@@ -71,6 +73,11 @@ public final class PDFWriter
 
     private static String parseThymeleafTemplate(final String absoluteFilePath, final Integer type, final Integer year)
     {
+        final TicketType ticketType = TicketType.forIdAndYear(type, year);
+        if (ticketType == null)
+        {
+            return null;
+        }
         final ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
         templateResolver.setSuffix(HTML);
         templateResolver.setTemplateMode(TemplateMode.HTML);
@@ -81,8 +88,9 @@ public final class PDFWriter
         final Context context = new Context();
         context.setVariable("year", year);
         context.setVariable("qr", absoluteFilePath + PNG);
-        context.setVariable("type", type == 1 ? "Tagesticket" : "Festivalpass (3 Tage)");
-        context.setVariable("price", type == 1 ? "15,00" : "30,00");
+
+        context.setVariable("type", ticketType.getName());
+        context.setVariable("price", new DecimalFormat("#,00").format(ticketType.getPrice()));
 
         return templateEngine.process("template", context);
     }
