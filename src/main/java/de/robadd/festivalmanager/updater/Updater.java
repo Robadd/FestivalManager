@@ -1,6 +1,7 @@
 package de.robadd.festivalmanager.updater;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,8 +15,17 @@ import java.util.stream.Collectors;
 public final class Updater
 {
 
+    private Update newUpdate;
+    private static List<String> currentDependencies = getCurrentDependencies();
+
     private Updater()
     {
+    }
+
+    private static List<String> getCurrentDependencies()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     public static void updateSoftware(final String currVersion)
@@ -24,13 +34,13 @@ public final class Updater
                 .findFirst();
         if (newestUpdate.isPresent() && newestUpdate.get().compareTo(new Version(currVersion)) > 0)
         {
-            download(newestUpdate.get());
+            File updateFolder = download(newestUpdate.get());
         }
     }
 
-    private static void download(final Version version)
+    private static File download(final Version version)
     {
-        // Empty for now
+        return null;
     }
 
     public static boolean newerUpdate(final String oldVersion, final String newVersion)
@@ -44,12 +54,12 @@ public final class Updater
     {
         Version currVersion = new Version(currentVersion);
 
-        return listUpdates().stream().filter(a -> a.getVersion().compareTo(currVersion) > 0).map(a ->
+        return listUpdates().stream().sorted().filter(a -> a.getVersion().compareTo(currVersion) > 0).map(a ->
         {
             StringBuilder notes = new StringBuilder();
             notes.append(a.getVersion())
                     .append("\n--------------\n")
-                    .append(a.getReleaseNotes())
+                    .append(a.getReleaseNotes().stream().collect(Collectors.joining("\n")))
                     .append('\n');
             return notes.toString();
         }).collect(Collectors.joining("\n\n"));
@@ -88,4 +98,5 @@ public final class Updater
         }
         return null;
     }
+
 }

@@ -29,17 +29,15 @@ public final class Main
 
     public static void main(final String[] args) throws Exception
     {
-        if (showUpdateWindowIfNecessary())
-        {
-            MainWindow.main();
-        }
+        MainWindow.main();
+        // showUpdateWindowIfNecessary();
     }
 
     private static boolean showUpdateWindowIfNecessary() throws IOException, ClassNotFoundException,
             InstantiationException,
             IllegalAccessException, UnsupportedLookAndFeelException
     {
-        boolean shouldShowMainWindow = true;
+        boolean shouldShowMainWindow = false;
         try (InputStream inputStream = Main.class.getResourceAsStream("/version.properties"))
         {
             if (inputStream != null)
@@ -58,7 +56,7 @@ public final class Main
                         {
                             LOG.info("version found");
                             UpdaterWindow.main(version);
-                            shouldShowMainWindow = false;
+                            shouldShowMainWindow = true;
                         }
                     }
                 }
