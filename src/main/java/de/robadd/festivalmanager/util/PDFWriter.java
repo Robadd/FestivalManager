@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,7 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import com.google.zxing.WriterException;
 
+import de.robadd.festivalmanager.Main;
 import de.robadd.festivalmanager.model.Ticket;
 import de.robadd.festivalmanager.model.TicketType;
 
@@ -29,6 +31,35 @@ public final class PDFWriter
 
     private PDFWriter()
     {
+    }
+
+    public static void preparePrint()
+    {
+        try
+        {
+            String savePath = Config.getInstance().getSavePath();
+            final File backgroundImage = new File(savePath + "logo-big.jpg");
+            FileUtils.copyURLToFile(Main.class.getResource("/logo-big.jpg"), backgroundImage);
+        }
+        catch (IOException e1)
+        {
+            LOG.error("", e1);
+        }
+
+    }
+
+    public static void endPrint()
+    {
+        try
+        {
+            String savePath = Config.getInstance().getSavePath();
+            final File backgroundImage = new File(savePath + "logo-big.jpg");
+            Files.delete(backgroundImage.toPath());
+        }
+        catch (IOException e1)
+        {
+            LOG.error("", e1);
+        }
     }
 
     public static File writePdf(final String savePath, final Ticket ticket, final Integer year)

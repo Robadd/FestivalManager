@@ -19,22 +19,21 @@ import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.SwingWorker;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.robadd.festivalmanager.db.CrudRepository;
 import de.robadd.festivalmanager.model.Ticket;
-import de.robadd.festivalmanager.ui.MainWindow;
-import de.robadd.festivalmanager.ui.StatusBar;
 import de.robadd.festivalmanager.ui.button.AddTicketButton;
 import de.robadd.festivalmanager.ui.entry.AttendeeEntry;
+import de.robadd.festivalmanager.ui.util.PrintWorker;
 import de.robadd.festivalmanager.util.CSVUtils;
 import de.robadd.festivalmanager.util.DbUtils;
 
 public final class AttendeesTab extends JPanel
 {
+
     private static final long serialVersionUID = 2113186135796490710L;
     private static final Logger LOG = LoggerFactory.getLogger(AttendeesTab.class);
     private final Panel entryList = new Panel();
@@ -109,34 +108,7 @@ public final class AttendeesTab extends JPanel
             @Override
             public void actionPerformed(final ActionEvent arg0)
             {
-                new SwingWorker<Object, Object>()
-                {
-                    @Override
-                    protected Object doInBackground() throws Exception
-                    {
-                        final StatusBar statusBar = MainWindow.getInstance().getStatusBar();
-                        final List<AttendeeEntry> attendeeEntries2 = getAttendeeEntries().stream()
-                                .filter(AttendeeEntry::isPaid)
-                                .collect(Collectors.toList());
-                        int entrySize = attendeeEntries2.size();
-                        statusBar.setStatus("PDF generieren (0 / " + entrySize + ")");
-
-                        statusBar.setMax(entrySize);
-
-                        for (int i = 0; i < entrySize; i++)
-                        {
-                            AttendeeEntry entry = attendeeEntries2.get(i);
-                            entry.print();
-                            statusBar.increment();
-                            statusBar.setStatus("PDF generieren (" + i + " / " + entrySize + ")");
-                            setProgress(i / entrySize);
-                        }
-                        Thread.sleep(500);
-                        statusBar.reset();
-                        statusBar.resetStatus();
-                        return null;
-                    }
-                }.execute();
+                new PrintWorker(getAttendeeEntries()).execute();
             }
         });
     }

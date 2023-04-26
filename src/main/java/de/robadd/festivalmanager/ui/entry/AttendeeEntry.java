@@ -7,9 +7,6 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Objects;
 
 import javax.swing.AbstractAction;
@@ -23,11 +20,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.robadd.festivalmanager.Main;
 import de.robadd.festivalmanager.model.Ticket;
 import de.robadd.festivalmanager.model.type.CSVWritable;
 import de.robadd.festivalmanager.ui.MainWindow;
@@ -209,22 +204,18 @@ public final class AttendeeEntry extends JPanel implements CSVWritable
         });
     }
 
+    public void printOnly()
+    {
+        String savePath = Config.getInstance().getSavePath();
+        Ticket ticket = new Ticket(getPersonName(), getType(), getTShirt());
+        PDFWriter.writePdf(savePath, ticket, 2023);
+    }
+
     public void print()
     {
-        try
-        {
-            String savePath = Config.getInstance().getSavePath();
-            final File backgroundImage = new File(savePath + "logo-big.jpg");
-            FileUtils.copyURLToFile(Main.class.getResource("/logo-big.jpg"), backgroundImage);
-
-            Ticket ticket = new Ticket(getPersonName(), getType(), getTShirt());
-            PDFWriter.writePdf(savePath, ticket, 2023);
-            Files.delete(backgroundImage.toPath());
-        }
-        catch (IOException e1)
-        {
-            LOG.error("", e1);
-        }
+        PDFWriter.preparePrint();
+        printOnly();
+        PDFWriter.endPrint();
     }
 
     private static GridBagConstraints layout(final int a)
