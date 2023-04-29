@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -99,4 +100,24 @@ public final class Updater
         return null;
     }
 
+    public static List<String> dependenciesToRemove(final Update newUpdate, final Update oldUpdate)
+    {
+        List<String> oldDep = oldUpdate.getDependencies();
+        List<String> newDep = newUpdate.getDependencies();
+        List<String> toRemove = new ArrayList<>();
+        toRemove.addAll(oldDep);
+        toRemove.removeAll(newDep);
+        return toRemove;
+    }
+
+    public static List<String> dependenciesToAdd(final Update newUpdate, final Update oldUpdate)
+    {
+        List<String> oldDep = oldUpdate.getDependencies();
+        List<String> newDep = newUpdate.getDependencies();
+        List<String> toAdd = new ArrayList<>();
+        toAdd.addAll(newDep);
+        toAdd.removeAll(oldDep);
+
+        return toAdd;
+    }
 }

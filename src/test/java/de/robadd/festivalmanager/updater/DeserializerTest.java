@@ -1,6 +1,5 @@
 package de.robadd.festivalmanager.updater;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
@@ -99,15 +98,11 @@ public class DeserializerTest
                 + "    \"error_prone_annotations-2.10.0.jar\"\r\n"
                 + "],\"releaseNotes\":[\"Added foo\"]}";
         Update actual2 = Update.from(json2);
-        List<String> oldDep = actual.getDependencies();
-        List<String> newDep = actual2.getDependencies();
-        List<String> toAdd = new ArrayList<>();
-        List<String> toRemove = new ArrayList<>();
-        toAdd.addAll(newDep);
-        toAdd.removeAll(oldDep);
-        toRemove.addAll(oldDep);
-        toRemove.removeAll(newDep);
-        Assertions.assertThat(toRemove).noneSatisfy(a -> toAdd.contains(a));
+
+        List<String> toAdd = Updater.dependenciesToAdd(actual, actual2);
+        List<String> toRemove = Updater.dependenciesToRemove(actual, actual2);
+        Assertions.assertThatList(toRemove).doesNotContainAnyElementsOf(toAdd);
+
         System.out.println("To add:\n" + toAdd);
         System.out.println("To remove:\n" + toRemove);
     }
