@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info" name="Festivalmanager">
+	<Appenders>
+		<File name="infofile" fileName="logs/info.log">
+			<PatternLayout>
+				<Pattern>%d %p %c [%t] %m%n</Pattern>
+			</PatternLayout>
+		</File>
+		
+		<File name="errorfile" fileName="logs/error.log">
+			<PatternLayout>
+				<Pattern>%d %p %c [%t] %m%n</Pattern>
+			</PatternLayout>
+		</File>
+		
+		<Async name="Async">
+			<AppenderRef ref="infofile" level="info"/>
+			<AppenderRef ref="errorfile" level="error"/>
+		</Async>
+		
+		<Console name="STDOUT" target="SYSTEM_OUT">
+			<PatternLayout pattern="%highlight{%d{ABSOLUTE} %p %c [%t] %m}%n"/>
+		</Console>
+	</Appenders>
+	
+	<Loggers>
+		<Root level="info">
+			<AppenderRef ref="Async" level="info" />
+			<AppenderRef ref="STDOUT" level="info" />
+		</Root>
+	</Loggers>
+</Configuration>

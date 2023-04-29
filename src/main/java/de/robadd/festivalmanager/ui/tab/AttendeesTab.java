@@ -117,7 +117,7 @@ public final class AttendeesTab extends JPanel
     {
         EventQueue.invokeLater(() ->
         {
-
+            LOG.info("Loading attendees from database");
             final List<Ticket> tickets = CrudRepository.of(Ticket.class).getAll();
             for (final Ticket ticket : tickets)
             {
@@ -129,6 +129,7 @@ public final class AttendeesTab extends JPanel
 
             entryList.getParent().revalidate();
             entryList.getParent().repaint();
+            LOG.info("Finished loading attendees from database");
         });
     }
 

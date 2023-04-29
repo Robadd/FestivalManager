@@ -64,6 +64,7 @@ public class MainWindow
             {
                 MainWindow.instance = new MainWindow();
                 MainWindow.getInstance().getFrame().setVisible(true);
+                LOG.info("MainWindow initialized");
                 addConfirmOnCloseDialog();
             }
             catch (final Exception e)

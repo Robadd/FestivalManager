@@ -132,6 +132,7 @@ public final class BandsTab extends JPanel
 
         EventQueue.invokeLater(() ->
         {
+            LOG.info("Loading bands from database");
             List<Band> bands = CrudRepository.of(Band.class).getAll().stream().collect(Collectors.toList());
             for (Band band : bands)
             {
@@ -143,6 +144,7 @@ public final class BandsTab extends JPanel
             }
             entryList.getParent().revalidate();
             entryList.getParent().repaint();
+            LOG.info("Finished loading bands from database");
         });
     }
 

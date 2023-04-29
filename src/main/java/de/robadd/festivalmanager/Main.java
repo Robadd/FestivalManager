@@ -29,6 +29,7 @@ public final class Main
 
     public static void main(final String[] args) throws Exception
     {
+        LOG.info("Startup");
         MainWindow.main();
         // showUpdateWindowIfNecessary();
     }
