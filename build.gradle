@@ -45,7 +45,7 @@ dependencies {
 	implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.20.0'
 
 	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.15.0'
-	implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.15.0'
+	implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.15.1'
 
 	implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '3.1.2'
 
