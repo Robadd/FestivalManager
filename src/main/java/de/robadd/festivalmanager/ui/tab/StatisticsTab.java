@@ -14,6 +14,7 @@ public final class StatisticsTab extends JPanel implements TabbedOnChangeListene
     private StatisticsEntry countEntry;
     private StatisticsEntry countType1Entry;
     private StatisticsEntry countType2Entry;
+    private StatisticsEntry countType3Entry;
     private StatisticsEntry paidEntry;
     private StatisticsEntry tshirtEntry;
     private int count;
@@ -21,6 +22,7 @@ public final class StatisticsTab extends JPanel implements TabbedOnChangeListene
     private int tshirt;
     private int countType1;
     private int countType2;
+    private int countType3;
 
     public StatisticsTab()
     {
@@ -34,6 +36,9 @@ public final class StatisticsTab extends JPanel implements TabbedOnChangeListene
 
         countType2Entry = new StatisticsEntry("3-Tages-Tickets", null, null);
         add(countType2Entry);
+
+        countType3Entry = new StatisticsEntry("Zuschauer", null, null);
+        add(countType3Entry);
 
         paidEntry = new StatisticsEntry("Bezahlt", null, null);
         add(paidEntry);
@@ -51,6 +56,7 @@ public final class StatisticsTab extends JPanel implements TabbedOnChangeListene
         tshirt = 0;
         countType1 = 0;
         countType2 = 0;
+        countType3 = 0;
         window.getAttendeeEntries().forEach(entry ->
         {
             if (StringUtils.isEmptyOrWhitespace(entry.getPersonName()))
@@ -74,6 +80,10 @@ public final class StatisticsTab extends JPanel implements TabbedOnChangeListene
             {
                 countType2++;
             }
+            if (entry.getType() == 3)
+            {
+                countType3++;
+            }
         });
         setValues();
         revalidate();
@@ -89,6 +99,9 @@ public final class StatisticsTab extends JPanel implements TabbedOnChangeListene
 
         countType2Entry.setValue(countType2);
         countType2Entry.setPercentage((float) countType2 / count);
+
+        countType3Entry.setValue(countType3);
+        countType3Entry.setPercentage((float) countType3 / count);
 
         paidEntry.setValue(paid);
         paidEntry.setPercentage((float) paid / count);
