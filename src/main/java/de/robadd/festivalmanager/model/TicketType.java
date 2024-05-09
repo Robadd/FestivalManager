@@ -2,9 +2,9 @@ package de.robadd.festivalmanager.model;
 
 public enum TicketType
 {
-    ALL_DAY(2, 2023, "All-Day Festival-Ticket", 40.00),
-    ONE_DAY(1, 2023, "One-Day Festival-Ticket", 20.00),
-    VISITOR(3, 2023, "Zuschauer Ticket", 10.00);
+    ALL_DAY(2, 2024, "All-Day Festival-Ticket", 50.00),
+    ONE_DAY(1, 2024, "One-Day Festival-Ticket", 25.00),
+    VISITOR(3, 2024, "Zuschauer Ticket", 10.00);
 
     private String name;
     private Integer id;

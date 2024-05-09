@@ -208,7 +208,7 @@ public final class AttendeeEntry extends JPanel implements CSVWritable
     {
         String savePath = Config.getInstance().getSavePath();
         Ticket ticket = new Ticket(getPersonName(), getType(), getTShirt());
-        PDFWriter.writePdf(savePath, ticket, 2023);
+        PDFWriter.writePdf(savePath, ticket, 2024);
     }
 
     public void print()
