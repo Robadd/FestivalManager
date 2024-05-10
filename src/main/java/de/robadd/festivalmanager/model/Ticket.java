@@ -9,6 +9,7 @@ import de.robadd.festivalmanager.model.annotation.Id;
 import de.robadd.festivalmanager.model.annotation.LoadFinalizing;
 import de.robadd.festivalmanager.model.type.CSVWritable;
 import de.robadd.festivalmanager.model.type.Identifiable;
+import de.robadd.festivalmanager.util.Config;
 import de.robadd.festivalmanager.util.Crypto;
 
 @DbTable("ticket")
@@ -27,6 +28,8 @@ public class Ticket implements CSVWritable, Identifiable, LoadFinalizing
     private Boolean paid = false;
     @DbField("sent")
     private Boolean sent = false;
+    @DbField("year")
+    private Integer year = Config.YEAR;
     private String hash;
 
     public Ticket()
@@ -259,5 +262,15 @@ public class Ticket implements CSVWritable, Identifiable, LoadFinalizing
     public void afterLoading()
     {
         addHash();
+    }
+
+    public Integer getYear()
+    {
+        return year;
+    }
+
+    public void setYear(Integer year)
+    {
+        this.year = year;
     }
 }

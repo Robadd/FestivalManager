@@ -21,9 +21,10 @@ import de.robadd.festivalmanager.model.type.Identifiable;
 
 public class CrudRepository<T extends Identifiable>
 {
+    private static final String WHERE = " WHERE ";
     private static final String SELECT = "SELECT ";
     private static final String FROM = " FROM ";
-    private static final Logger LOG = LoggerFactory.getLogger(CrudRepository.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(CrudRepository.class);
     private final TableMetaData<T> metaData;
 
     public static <S extends Identifiable> CrudRepository<S> of(final Class<S> argClazz)
@@ -31,7 +32,7 @@ public class CrudRepository<T extends Identifiable>
         return new CrudRepository<>(argClazz);
     }
 
-    private CrudRepository(final Class<T> argClazz)
+    protected CrudRepository(final Class<T> argClazz)
     {
         super();
         metaData = TableMetaData.from(argClazz);
@@ -48,7 +49,8 @@ public class CrudRepository<T extends Identifiable>
                         .collect(Collectors.joining(","))
                 + FROM
                 + tableName
-                + " WHERE " + metaData.getIdField() + " = " + id;
+                + WHERE
+                + metaData.getIdField() + " = " + id;
         try (Connection conn = getConnection();
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(sql))
@@ -66,18 +68,28 @@ public class CrudRepository<T extends Identifiable>
         return retVal;
     }
 
-    private boolean deleteAll(final Connection conn)
+    public boolean delete(final T value)
     {
-        String sql = "DELETE FROM " + metaData.getTableName();
-        try (Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(sql))
+        final String tableName = metaData.getTableName();
+        final String sql = "DELETE "
+                + FROM
+                + tableName
+                + WHERE + metaData.getIdField() + " = " + value.getId();
+        try (Connection conn = getConnection();
+                Statement stmt = conn.createStatement();)
         {
-            return true;
+            int rs = stmt.executeUpdate(sql);
+            if (rs > 0)
+            {
+                return true;
+            }
         }
-        catch (final SQLException e)
+        catch (final Exception e)
         {
-            return false;
+            LOG.error("Error while loading", e);
         }
+
+        return false;
     }
 
     public boolean create(final T val, final Connection conn)
@@ -130,7 +142,7 @@ public class CrudRepository<T extends Identifiable>
                         .collect(Collectors.joining(","))
                 + FROM
                 + tableName
-                + " WHERE " + colName + " = " + value.toString();
+                + WHERE + colName + " = " + value.toString();
         try (Connection conn = getConnection();
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(sql))
@@ -177,7 +189,7 @@ public class CrudRepository<T extends Identifiable>
         return retVal;
     }
 
-    private Connection getConnection() throws SQLException
+    protected Connection getConnection() throws SQLException
     {
         return DriverManager.getConnection("jdbc:mariadb://s193.goserver.host/web127_db1", "web127",
             "8VDZuNiZKTBQCkZdlDE3");
@@ -289,14 +301,55 @@ public class CrudRepository<T extends Identifiable>
         }
     }
 
+    /**
+     * Update
+     *
+     * @param value value to update
+     * @param conn  Connection
+     * @return if row was updated
+     */
+    public boolean update(final T value, final Connection conn)
+    {
+        final StringBuilder sql = new StringBuilder("UPDATE ")
+                .append(metaData.getTableName())
+                .append(" SET ")
+                .append(metaData.getFieldsMeta().stream().filter(a -> !a.isId())
+                        .map(a -> a.getColumnName() + " = " + getValue(value, a.getGetter()))
+                        .collect(Collectors.joining(",")))
+                .append(WHERE)
+                .append(metaData.getIdField())
+                .append(" = ")
+                .append(value.getId());
+
+        try (Statement stmt = conn.createStatement();)
+        {
+            return 1 == stmt.executeUpdate(sql.toString());
+        }
+        catch (final SQLException e)
+        {
+            return false;
+        }
+    }
+
     public boolean save(final List<T> tickets)
     {
         try (Connection con = getConnection())
         {
+            int rowCount = 0;
             con.setAutoCommit(false);
-            deleteAll(con);
-            boolean allSucess = tickets.stream().map(a -> create(a, con)).allMatch(Boolean.TRUE::equals);
-            if (allSucess)
+            List<T> dbTickets = getAll();
+
+            for (T t : tickets)
+            {
+                if (update(t, con) || create(t, con))
+                {
+                    dbTickets.removeIf(a -> t.getId().equals(a.getId()));
+                    rowCount++;
+                }
+            }
+            dbTickets.forEach(CrudRepository.this::delete);
+
+            if (rowCount == tickets.size())
             {
                 con.commit();
                 return true;

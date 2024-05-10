@@ -23,13 +23,13 @@ import javax.swing.JPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.robadd.festivalmanager.db.CrudRepository;
+import de.robadd.festivalmanager.db.TicketRepository;
 import de.robadd.festivalmanager.model.Ticket;
 import de.robadd.festivalmanager.ui.button.AddTicketButton;
 import de.robadd.festivalmanager.ui.entry.AttendeeEntry;
 import de.robadd.festivalmanager.ui.util.PrintWorker;
 import de.robadd.festivalmanager.util.CSVUtils;
-import de.robadd.festivalmanager.util.DbUtils;
+import de.robadd.festivalmanager.util.Config;
 
 public final class AttendeesTab extends JPanel
 {
@@ -118,7 +118,9 @@ public final class AttendeesTab extends JPanel
         EventQueue.invokeLater(() ->
         {
             LOG.info("Loading attendees from database");
-            final List<Ticket> tickets = CrudRepository.of(Ticket.class).getAll();
+            final List<Ticket> tickets = new TicketRepository().getAll().stream()
+                    .filter(a -> Config.YEAR.equals(a.getYear()))
+                    .collect(Collectors.toList());
             for (final Ticket ticket : tickets)
             {
                 final AttendeeEntry entry1 = new AttendeeEntry(ticket, getAttendeeEntries().size() + 1);
@@ -173,10 +175,11 @@ public final class AttendeesTab extends JPanel
                     retVal.setSent(a.isSent());
                     retVal.setTShirt(a.getTShirt());
                     retVal.setType(a.getType());
+                    retVal.setId(a.getId());
                     return retVal;
                 })
                 .collect(Collectors.toList());
-        DbUtils.writeToDb(collect, Ticket.class);
+        new TicketRepository().save(collect);
     }
 
     private JButton initAddTicketButton()

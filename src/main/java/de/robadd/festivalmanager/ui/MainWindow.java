@@ -193,7 +193,7 @@ public class MainWindow
         return MainWindow.getInstance().attendeesTab;
     }
 
-    JFrame getFrame()
+    public JFrame getFrame()
     {
         return frame;
     }

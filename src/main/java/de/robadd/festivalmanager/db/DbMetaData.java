@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 
 public class DbMetaData
 {
+    private boolean isId;
     private Method getter;
     private Method setter;
     private String columnName;
@@ -89,6 +90,16 @@ public class DbMetaData
     public void setClazz(final Class<?> clazz)
     {
         this.clazz = clazz;
+    }
+
+    public boolean isId()
+    {
+        return isId;
+    }
+
+    public void setId(final boolean isId)
+    {
+        this.isId = isId;
     }
 
 }

@@ -28,6 +28,7 @@ public final class Config
     private static final String BANDS_CSV_FILE = "bandsCsvFile";
     private static final String CHROME_PATH = "chromePath";
     private static final String SECRET_KEY = "secretKey";
+    public static final Integer YEAR = 2024;
 
     private Config()
     {

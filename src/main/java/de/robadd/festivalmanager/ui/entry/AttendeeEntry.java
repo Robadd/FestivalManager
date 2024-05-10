@@ -43,6 +43,8 @@ public final class AttendeeEntry extends JPanel implements CSVWritable
     private JCheckBox paidCheckbox;
     private JButton printPdfButton;
     private JCheckBox sentCheckbox;
+    private Integer id;
+    private Integer year = Config.YEAR;
     private JLabel pos = new JLabel();
     private ButtonGroup type;
 
@@ -67,6 +69,11 @@ public final class AttendeeEntry extends JPanel implements CSVWritable
         paidCheckbox.setSelected(ticket.getPaid());
         printPdfButton.setEnabled(ticket.getPaid());
         sentCheckbox.setSelected(ticket.getSent());
+        id = ticket.getId();
+        if (!year.equals(ticket.getYear()))
+        {
+
+        }
     }
 
     public AttendeeEntry(final Integer position)
@@ -138,16 +145,17 @@ public final class AttendeeEntry extends JPanel implements CSVWritable
             @Override
             public void actionPerformed(final ActionEvent e)
             {
+                Container parent = self.getParent();
+                parent.remove(self);
+//                Stream.of(parent.getComponents())
+//                .filter(a -> a instanceof AttendeeEntry)
+//                .map(AttendeeEntry.class::cast)
+//                .sorted((a,b)->a.getpos);
+                parent.revalidate();
+                parent.repaint();
                 EventQueue.invokeLater(() ->
                 {
-                    Container parent = self.getParent();
-                    parent.remove(self);
-//                    Stream.of(parent.getComponents())
-//                    .filter(a -> a instanceof AttendeeEntry)
-//                    .map(AttendeeEntry.class::cast)
-//                    .sorted((a,b)->a.getpos);
-                    parent.revalidate();
-                    // parent.repaint();
+
                 });
 
             }
@@ -330,7 +338,13 @@ public final class AttendeeEntry extends JPanel implements CSVWritable
                 && Objects.equals(pos.getText(), other.pos.getText())
                 && Objects.equals(isSent(), other.isSent())
                 && Objects.equals(getTShirt(), other.getTShirt())
+                && Objects.equals(getId(), other.getId())
                 && Objects.equals(getType(), other.getType());
+    }
+
+    public Integer getId()
+    {
+        return id;
     }
 
 }

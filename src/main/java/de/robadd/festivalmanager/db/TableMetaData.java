@@ -50,7 +50,12 @@ public class TableMetaData<T>
                     meta.setColumnName(columnName);
                     if (idAnnotation != null)
                     {
+                        meta.setId(true);
                         metaData.idField = columnName;
+                    }
+                    else
+                    {
+                        meta.setId(false);
                     }
                     metaData.getFieldsMeta().add(meta);
                 }

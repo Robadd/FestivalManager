@@ -25,7 +25,6 @@ public final class Updater
 
     private static List<String> getCurrentDependencies()
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
