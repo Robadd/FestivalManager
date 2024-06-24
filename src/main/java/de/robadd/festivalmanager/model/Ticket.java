@@ -269,7 +269,7 @@ public class Ticket implements CSVWritable, Identifiable, LoadFinalizing
         return year;
     }
 
-    public void setYear(Integer year)
+    public void setYear(final Integer year)
     {
         this.year = year;
     }

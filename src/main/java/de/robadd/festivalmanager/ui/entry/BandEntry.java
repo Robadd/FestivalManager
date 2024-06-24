@@ -16,6 +16,7 @@ import javax.swing.SwingConstants;
 import de.robadd.festivalmanager.model.Band;
 import de.robadd.festivalmanager.model.FestivalDay;
 import de.robadd.festivalmanager.model.type.CSVWritable;
+import de.robadd.festivalmanager.util.Config;
 
 public final class BandEntry extends JPanel implements CSVWritable
 {
@@ -91,7 +92,7 @@ public final class BandEntry extends JPanel implements CSVWritable
         liveCheckbox.setHorizontalAlignment(SwingConstants.CENTER);
 
         dayBox = new JComboBox<>();
-        dayBox.setModel(new DefaultComboBoxModel<>(FestivalDay.values()));
+        dayBox.setModel(new DefaultComboBoxModel<>(FestivalDay.forYear(Config.YEAR)));
 
         final GridBagConstraints layout0 = layoutFill(0);
         final GridBagConstraints layout1 = layoutFill(1);
